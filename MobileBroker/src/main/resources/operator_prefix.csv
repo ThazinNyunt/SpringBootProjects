@@ -1,0 +1,7 @@
+operator_prefix_id,operator_id,ndc,prefix_start,prefix_end
+1,MPT,9,20,24
+2,MPT,9,250,259
+3,MEC,9,300,309
+4,TIM,9,6500,6509
+5,ATOM,9,7400,7409
+6,OOREDOO,9,9400,9401
