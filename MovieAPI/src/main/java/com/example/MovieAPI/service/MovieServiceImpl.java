@@ -23,7 +23,7 @@ public class MovieServiceImpl implements MovieService {
         // 1. upload the file
 
         // 2. set the value of field 'poster' as filename
-        // 3. map dto to Movie objet
+        // 3. map dto to Movie object
         // 4. save the movie object -> saved Movie object
         // 5. generate the posterUrl
         // 6. map Movie object to DTO object and return it

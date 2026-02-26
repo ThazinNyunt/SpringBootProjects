@@ -7,10 +7,12 @@
         <option value="$PROJECT_DIR$/example/pom.xml" />
         <option value="$PROJECT_DIR$/MovieAPI/pom.xml" />
         <option value="$PROJECT_DIR$/mobilebroker/pom.xml" />
+        <option value="$PROJECT_DIR$/Project/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/Project/pom.xml" />
         <option value="$PROJECT_DIR$/example/pom.xml" />
       </set>
     </option>
