@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MobilebrokerApplication {
+public class MobileBrokerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MobilebrokerApplication.class, args);
+		SpringApplication.run(MobileBrokerApplication.class, args);
 	}
 
 }

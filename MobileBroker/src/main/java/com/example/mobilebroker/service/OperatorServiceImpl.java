@@ -47,7 +47,7 @@ public class OperatorServiceImpl implements OperatorService{
             if (remaining.length() < length) {  // 25425<5 , 2542<3
                 continue;
             }
-            int prefix = Integer.parseInt(remaining.substring(0, length)); // 2542 254 25 2
+            int prefix = Integer.parseInt(remaining.substring(0, length)); // 25425 2542 254 25
             for (OperatorPrefix p : operatorPrefixes) {
                 if (prefix >= p.getPrefixStart() && prefix <= p.getPrefixEnd()) {
                     Operator operator = operatorRepository.findById(p.getOperatorId()).orElse(null);
