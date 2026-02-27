@@ -5,7 +5,7 @@
 
  null input          -> Exception
  format invalid      -> Exception
- length invalid      -> Optional.empty()
+ length invalid      -> Exception
  NDC not found       -> Optional.empty()
  Prefix not found    -> Operator Not Found
  DB operator missing -> Operator Not Found

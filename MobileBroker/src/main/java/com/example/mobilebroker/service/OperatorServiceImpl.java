@@ -25,13 +25,7 @@ public class OperatorServiceImpl implements OperatorService{
     @Override
     public Optional<OperatorResponse> findOperator(String phoneNumber) {
 
-        String normalized = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 95254252784
-
-        String nsn = normalized.substring(2); // remove country code 95
-
-        if (nsn.length() < 7 || nsn.length() > 10) {
-            return Optional.empty();
-        }
+        String nsn = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 9254252784
 
         Ndc matchedNdc = getMatchedNdc(nsn); // 9, Mobile
 

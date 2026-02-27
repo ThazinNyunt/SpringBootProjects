@@ -2,7 +2,6 @@ package com.example.mobilebroker.cache;
 
 import com.example.mobilebroker.json.Ndc;
 import com.example.mobilebroker.json.OperatorPrefix;
-import com.example.mobilebroker.json.PrefixData;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.core.io.ClassPathResource;

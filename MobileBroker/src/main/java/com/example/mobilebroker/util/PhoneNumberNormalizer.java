@@ -2,6 +2,8 @@ package com.example.mobilebroker.util;
 
 import com.example.mobilebroker.exception.InvalidPhoneNumberException;
 
+import java.util.Optional;
+
 public class PhoneNumberNormalizer {
 
     public static String normalizeToNsn(String phone) {
@@ -18,6 +20,12 @@ public class PhoneNumberNormalizer {
 
         if (!phone.startsWith("95")) {
             throw new InvalidPhoneNumberException("Invalid Myanmar Phone Number Format");
+        }
+
+        phone = phone.substring(2); // 95254252784
+
+        if (phone.length() < 7 || phone.length() > 10) {
+            throw new InvalidPhoneNumberException("Invalid phone number length");
         }
 
         return phone;
