@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.InputStream;
@@ -26,9 +27,9 @@ public class PrefixCache {
     public void loadData() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            InputStream input = new ClassPathResource("prefix-data.json").getInputStream();
-            PrefixData data = mapper.readValue(input, PrefixData.class);
-            for (Ndc n : data.getNdc()) {
+            InputStream ndcInput = new ClassPathResource("ndc.json").getInputStream();
+            List<Ndc> ndcList = mapper.readValue(ndcInput, new TypeReference<List<Ndc>>() {});
+            for (Ndc n : ndcList) {
                 ndcMap.put(n.getNdc(), n);
                 sortedNdcList.add(n);
             }
@@ -41,7 +42,10 @@ public class PrefixCache {
                 }
             });
 
-            for (OperatorPrefix op : data.getOperatorPrefix()) {
+            InputStream opInput = new ClassPathResource("operator-prefix.json").getInputStream();
+            List<OperatorPrefix> opList = mapper.readValue(opInput, new TypeReference<List<OperatorPrefix>>() {});
+
+            for (OperatorPrefix op : opList) {
                 List<OperatorPrefix> list = operatorPrefixMap.get(op.getNdc());
                 if(list == null) {
                     list = new ArrayList<>();

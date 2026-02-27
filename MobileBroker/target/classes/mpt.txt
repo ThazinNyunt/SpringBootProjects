@@ -1,0 +1,11 @@
+20:24
+250:259
+
+
+
+ null input          -> Exception
+ format invalid      -> Exception
+ length invalid      -> Optional.empty()
+ NDC not found       -> Optional.empty()
+ Prefix not found    -> Operator Not Found
+ DB operator missing -> Operator Not Found

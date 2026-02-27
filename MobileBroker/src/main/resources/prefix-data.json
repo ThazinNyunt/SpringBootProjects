@@ -57,11 +57,10 @@
     { "operatorId": "MPT", "ndc": 9, "prefixStart": 500, "prefixEnd": 569 },
     { "operatorId": "Mytel", "ndc": 9, "prefixStart": 6500, "prefixEnd": 6539 },
     { "operatorId": "Mytel", "ndc": 9, "prefixStart": 6600, "prefixEnd": 6999 },
-    { "operatorId": "Mytel", "ndc": 9, "prefixStart": 730, "prefixEnd": 739 },
+    { "operatorId": "MPT", "ndc": 9, "prefixStart": 730, "prefixEnd": 739 },
     { "operatorId": "ATOM", "ndc": 9, "prefixStart": 7400, "prefixEnd": 7409 },
     { "operatorId": "ATOM", "ndc": 9, "prefixStart": 7500, "prefixEnd": 7999 },
-    { "operatorId": "MPT", "ndc": 9, "prefixStart": 830, "prefixEnd": 879 },
-    { "operatorId": "MPT", "ndc": 9, "prefixStart": 8800, "prefixEnd": 9100 },
-    { "operatorId": "U9", "ndc": 9, "prefixStart": 9400, "prefixEnd": 9899 }
+    { "operatorId": "MPT", "ndc": 9, "prefixStart": 830, "prefixEnd": 919 },
+    { "operatorId": "U9", "ndc": 9, "prefixStart": 940, "prefixEnd": 989 }
   ]
 }

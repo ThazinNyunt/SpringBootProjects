@@ -1,14 +1,15 @@
 package com.example.mobilebroker.controller;
 
 import com.example.mobilebroker.dto.OperatorResponse;
+import com.example.mobilebroker.exception.InvalidPhoneNumberException;
 import com.example.mobilebroker.service.OperatorService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/phone-numbers")
 public class OperatorController {
 
     private final OperatorService operatorService;
@@ -17,8 +18,9 @@ public class OperatorController {
         this.operatorService = operatorService;
     }
 
-    @GetMapping("/operator")
-    public OperatorResponse getOperator(@RequestParam String phonenumber) {
-        return operatorService.findOperator(phonenumber);
+    @GetMapping("/{number}")
+    public ResponseEntity<OperatorResponse> getPhoneNumberInfo(@PathVariable("number") String phoneNumber) {
+        return operatorService.findOperator(phoneNumber).map(ResponseEntity::ok)
+                .orElseThrow(() -> new InvalidPhoneNumberException("Invalid phone number"));
     }
 }

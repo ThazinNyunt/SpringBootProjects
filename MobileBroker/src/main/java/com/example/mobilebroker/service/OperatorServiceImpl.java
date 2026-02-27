@@ -2,7 +2,6 @@ package com.example.mobilebroker.service;
 
 import com.example.mobilebroker.cache.PrefixCache;
 import com.example.mobilebroker.dto.OperatorResponse;
-import com.example.mobilebroker.exception.InvalidPhoneNumberException;
 import com.example.mobilebroker.json.Ndc;
 import com.example.mobilebroker.json.OperatorPrefix;
 import com.example.mobilebroker.model.Operator;
@@ -24,23 +23,33 @@ public class OperatorServiceImpl implements OperatorService{
     }
 
     @Override
-    public OperatorResponse findOperator(String phoneNumber) {
-        String normalized = PhoneNumberNormalizer.normalize(phoneNumber); //95254252784
-        if(!normalized.startsWith("95")) {
-            throw new InvalidPhoneNumberException("Invalid Myanmar Phone Number");
-        }
-        String nsn = normalized.substring(2); // 9254252784
+    public Optional<OperatorResponse> findOperator(String phoneNumber) {
+
+        String normalized = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 95254252784
+
+        String nsn = normalized.substring(2); // remove country code 95
+
         if (nsn.length() < 7 || nsn.length() > 10) {
-            throw new InvalidPhoneNumberException("Invalid Phone Number");
+            return Optional.empty();
         }
+
         Ndc matchedNdc = getMatchedNdc(nsn); // 9, Mobile
 
+        if (matchedNdc == null) {
+            return Optional.empty();
+        }
+
         String remaining = nsn.substring(matchedNdc.getNdc().toString().length()); // 254252784
+
+        if (remaining.startsWith("0")) {
+            return Optional.of(new OperatorResponse(phoneNumber,"Invalid Number",matchedNdc.getArea(),matchedNdc.getNumberType()
+            ));
+        }
 
         List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedNdc.getNdc()); // ndc=9 {}
 
         if(operatorPrefixes == null) {
-            return new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType());
+            return Optional.of(new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
         }
 
         for(int length = 5; length >= 1 ; length--) {
@@ -57,11 +66,11 @@ public class OperatorServiceImpl implements OperatorService{
                     } else {
                         operatorName = "Operator Not Found";
                     }
-                    return new OperatorResponse(phoneNumber, operatorName, matchedNdc.getArea(), matchedNdc.getNumberType());
+                    return Optional.of(new OperatorResponse(phoneNumber, operatorName, matchedNdc.getArea(), matchedNdc.getNumberType()));
                 }
             }
         }
-        return new OperatorResponse(phoneNumber,"Operator Not Found" , matchedNdc.getArea(), matchedNdc.getNumberType());
+        return Optional.of(new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
 
     }
 
@@ -72,7 +81,7 @@ public class OperatorServiceImpl implements OperatorService{
                 return ndc;
             }
         }
-        throw new InvalidPhoneNumberException("NDC not found");
+        return null;
     }
 }
 

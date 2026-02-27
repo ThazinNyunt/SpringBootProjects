@@ -1,0 +1,21 @@
+[
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 20, "prefixEnd": 24 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 250, "prefixEnd": 259 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 2600, "prefixEnd": 2699 },
+  { "operatorId": "MecTel", "ndc": 9, "prefixStart": 300, "prefixEnd": 339 },
+  { "operatorId": "MecTel", "ndc": 9, "prefixStart": 34000, "prefixEnd": 34029 },
+  { "operatorId": "MecTel", "ndc": 9, "prefixStart": 34600, "prefixEnd": 34619 },
+  { "operatorId": "MecTel", "ndc": 9, "prefixStart": 34900, "prefixEnd": 34909 },
+  { "operatorId": "MecTel", "ndc": 9, "prefixStart": 360, "prefixEnd": 369 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 4000, "prefixEnd": 4599 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 470, "prefixEnd": 479 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 490, "prefixEnd": 499 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 500, "prefixEnd": 569 },
+  { "operatorId": "Mytel", "ndc": 9, "prefixStart": 6500, "prefixEnd": 6539 },
+  { "operatorId": "Mytel", "ndc": 9, "prefixStart": 6600, "prefixEnd": 6999 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 730, "prefixEnd": 739 },
+  { "operatorId": "ATOM", "ndc": 9, "prefixStart": 7400, "prefixEnd": 7409 },
+  { "operatorId": "ATOM", "ndc": 9, "prefixStart": 7500, "prefixEnd": 7999 },
+  { "operatorId": "MPT", "ndc": 9, "prefixStart": 830, "prefixEnd": 919 },
+  { "operatorId": "U9", "ndc": 9, "prefixStart": 940, "prefixEnd": 989 }
+]
