@@ -1,8 +1,10 @@
 package com.example.mobilebroker.controller;
 
 import com.example.mobilebroker.dto.OperatorResponse;
+import com.example.mobilebroker.error.OperatorError;
 import com.example.mobilebroker.exception.InvalidPhoneNumberException;
 import com.example.mobilebroker.service.OperatorService;
+import io.vavr.control.Either;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,7 @@ public class OperatorController {
     }
 
     @GetMapping("/{number}")
-    public ResponseEntity<OperatorResponse> getPhoneNumberInfo(@PathVariable("number") String phoneNumber) {
-        return operatorService.findOperator(phoneNumber).map(ResponseEntity::ok)
-                .orElseThrow(() -> new InvalidPhoneNumberException("Invalid phone number"));
+    public Either<OperatorError, OperatorResponse> getPhoneNumberInfo(@PathVariable("number") String phoneNumber) {
+       return operatorService.findOperator(phoneNumber);
     }
 }

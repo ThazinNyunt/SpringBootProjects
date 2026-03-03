@@ -27,7 +27,7 @@ VALUES
     ('MEC', 'Myanmar Economic Corporation', 95),
     ('TIM', 'Telecom International Myanmar Co.,Ltd', 95),
     ('ATOM', 'ATOM Myanmar Limited', 95),
-    ('OOREDOO', 'Ooredoo Myanmar Limited', 95);
+    ('U9', 'Ooredoo Myanmar Limited', 95);
 
 INSERT INTO operator_prefix(operator_id, ndc, prefix_start, prefix_end)
 VALUES

@@ -2,11 +2,14 @@ package com.example.mobilebroker.service;
 
 import com.example.mobilebroker.cache.PrefixCache;
 import com.example.mobilebroker.dto.OperatorResponse;
+import com.example.mobilebroker.error.OperatorError;
 import com.example.mobilebroker.json.Ndc;
 import com.example.mobilebroker.json.OperatorPrefix;
 import com.example.mobilebroker.model.Operator;
 import com.example.mobilebroker.repository.OperatorRepository;
 import com.example.mobilebroker.util.PhoneNumberNormalizer;
+import io.vavr.control.Either;
+import io.vavr.control.Option;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,60 +26,119 @@ public class OperatorServiceImpl implements OperatorService{
     }
 
     @Override
-    public Optional<OperatorResponse> findOperator(String phoneNumber) {
+    public Either<OperatorError, OperatorResponse> findOperator(String phoneNumber) {
 
         String nsn = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 9254252784
 
         Ndc matchedNdc = getMatchedNdc(nsn); // 9, Mobile
 
         if (matchedNdc == null) {
-            return Optional.empty();
+            return Either.left(new OperatorError.InvalidPhoneNumber(phoneNumber));
         }
 
-        String remaining = nsn.substring(matchedNdc.getNdc().toString().length()); // 254252784
+        return Either.right(resolveOperator(phoneNumber, nsn, matchedNdc));
+    }
+
+    private OperatorResponse resolveOperator(String phoneNumber, String nsn, Ndc ndc) {
+        String remaining = nsn.substring(ndc.getNdc().toString().length()); // 254252784
 
         if (remaining.startsWith("0")) {
-            return Optional.of(new OperatorResponse(phoneNumber,"Invalid Number",matchedNdc.getArea(),matchedNdc.getNumberType()
-            ));
+            return new OperatorResponse(phoneNumber,"Invalid Number",ndc.getArea(),ndc.getNumberType());
         }
 
-        List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedNdc.getNdc()); // ndc=9 {}
+        List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(ndc.getNdc()); // ndc=9 {}
 
         if(operatorPrefixes == null) {
-            return Optional.of(new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
+            return new OperatorResponse(phoneNumber, "Operator Not Found", ndc.getArea(), ndc.getNumberType());
         }
 
+        String operatorName = matchPrefix(remaining, operatorPrefixes);
+        return new OperatorResponse(phoneNumber, operatorName, ndc.getArea(), ndc.getNumberType());
+    }
+
+    private String matchPrefix(String remaining, List<OperatorPrefix> prefixes) {
         for(int length = 5; length >= 1 ; length--) {
             if (remaining.length() < length) {  // 25425<5 , 2542<3
                 continue;
             }
-            int prefix = Integer.parseInt(remaining.substring(0, length)); // 25425 2542 254 25
-            for (OperatorPrefix p : operatorPrefixes) {
+             int prefix = Integer.parseInt(remaining.substring(0, length)); // 25425 2542 254 25
+            for (OperatorPrefix p : prefixes) {
                 if (prefix >= p.getPrefixStart() && prefix <= p.getPrefixEnd()) {
-                    Operator operator = operatorRepository.findById(p.getOperatorId()).orElse(null);
-                    String operatorName;
-                    if(operator != null) {
-                        operatorName = operator.getOperatorId();
-                    } else {
-                        operatorName = "Operator Not Found";
+                    Optional<Operator> operator = operatorRepository.findById(p.getOperatorId());
+                    if(operator.isPresent()) {
+                        return operator.get().getOperatorId();
                     }
-                    return Optional.of(new OperatorResponse(phoneNumber, operatorName, matchedNdc.getArea(), matchedNdc.getNumberType()));
+                    return "Operator Not Found";
                 }
             }
         }
-        return Optional.of(new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
-
+        return "Operator Not Found";
     }
 
     private Ndc getMatchedNdc(String nsn) {
-        List<Ndc> ndcList = prefixCache.getSortedNdcList();
-        for (Ndc ndc : ndcList) {
-            if (nsn.startsWith(ndc.getNdc().toString())) {
+        for(Ndc ndc: prefixCache.getSortedNdcList()) {
+            if(nsn.startsWith(ndc.getNdc().toString())) {
                 return ndc;
             }
         }
         return null;
     }
+
+//    @Override
+//    public Optional<OperatorResponse> findOperator(String phoneNumber) {
+//
+//        String nsn = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 9254252784
+//
+//        Ndc matchedNdc = getMatchedNdc(nsn); // 9, Mobile
+//
+//        if (matchedNdc == null) {
+//            return Optional.empty();
+//        }
+//
+//        String remaining = nsn.substring(matchedNdc.getNdc().toString().length()); // 254252784
+//
+//        if (remaining.startsWith("0")) {
+//            return Optional.of(new OperatorResponse(phoneNumber,"Invalid Number",matchedNdc.getArea(),matchedNdc.getNumberType()
+//            ));
+//        }
+//
+//        List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedNdc.getNdc()); // ndc=9 {}
+//
+//        if(operatorPrefixes == null) {
+//            return Optional.of(new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
+//        }
+//
+//        for(int length = 5; length >= 1 ; length--) {
+//            if (remaining.length() < length) {  // 25425<5 , 2542<3
+//                continue;
+//            }
+//            int prefix = Integer.parseInt(remaining.substring(0, length)); // 25425 2542 254 25
+//            for (OperatorPrefix p : operatorPrefixes) {
+//                if (prefix >= p.getPrefixStart() && prefix <= p.getPrefixEnd()) {
+//                    Operator operator = operatorRepository.findById(p.getOperatorId()).orElse(null);
+//                    String operatorName;
+//                    if(operator != null) {
+//                        operatorName = operator.getOperatorId();
+//                    } else {
+//                        operatorName = "Operator Not Found";
+//                    }
+//                    return Optional.of(new OperatorResponse(phoneNumber, operatorName, matchedNdc.getArea(), matchedNdc.getNumberType()));
+//                }
+//            }
+//        }
+//        return Optional.of(new OperatorResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
+//
+//    }
+//
+//    private Ndc getMatchedNdc(String nsn) {
+//        List<Ndc> ndcList = prefixCache.getSortedNdcList();
+//        for (Ndc ndc : ndcList) {
+//            if (nsn.startsWith(ndc.getNdc().toString())) {
+//                return ndc;
+//            }
+//        }
+//        return null;
+//    }
 }
 
 
