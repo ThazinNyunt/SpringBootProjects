@@ -1,13 +1,13 @@
-package com.example.mobilebroker.dto;
+package com.example.mobilebroker.controller.api.dtos;
 
-public class OperatorResponse {
+public class PhoneNumberInfoResponse {
 
     private String phoneNumber;
     private String operator;
     private String area;
     private String numberType;
 
-    public OperatorResponse(String phoneNumber, String operator, String area, String numberType) {
+    public PhoneNumberInfoResponse(String phoneNumber, String operator, String area, String numberType) {
         this.phoneNumber = phoneNumber;
         this.operator = operator;
         this.area = area;

@@ -1,9 +1,8 @@
 package com.example.mobilebroker.exception;
 
-import com.example.mobilebroker.error.OperatorError;
+import com.example.mobilebroker.error.PhoneNumberInfoLookupError;
 import io.vavr.control.Either;
 import jakarta.servlet.http.HttpServletRequest;
-import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,18 +30,9 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
             if (either.isRight()) {
                 return either.get();
             }
-            OperatorError error = (OperatorError) either.getLeft();
-            String uri = ((ServletServerHttpRequest) request).getServletRequest().getRequestURI();
-            response.setStatusCode(HttpStatus.BAD_REQUEST);
-            if(error instanceof OperatorError.InvalidPhoneNumber e) {
-                return ProblemDetails.builder()
-                        .type("https//example.com/problem/invalid-phone-number")
-                        .title("Invalid Phone Number")
-                        .status(HttpStatus.BAD_REQUEST.value())
-                        .detail("No operator found for: " + e.phoneNumber())
-                        .instance(uri)
-                        .build();
-            }
+
+            ProblemDetails error = (ProblemDetails) either.getLeft();
+            return error;
         }
         return body;
     }
@@ -55,7 +45,7 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
                 .title("Invalid Phone Number")
                 .status(HttpStatus.BAD_REQUEST.value())
                 .detail(ex.getMessage())
-                .instance(request.getRequestURI())
+                //.instance(request.getRequestURI())
                 .build();
 
         return new ResponseEntity<>(problem, HttpStatus.BAD_REQUEST);
@@ -68,7 +58,7 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
                 .title("Internal Server Error")
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .detail("Unexpected system error occured.")
-                .instance(request.getRequestURI())
+                //.instance(request.getRequestURI())
                 .build();
         return  new ResponseEntity<>(problem, HttpStatus.INTERNAL_SERVER_ERROR);
     }
