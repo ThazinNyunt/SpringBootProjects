@@ -3,7 +3,7 @@
   { "ndc": 10, "area": "Location-independent voice services", "numberType": "Non-geographic numbers" },
   { "ndc": 11, "area": "Location-independent voice services", "numberType": "Non-geographic numbers" },
   { "ndc": 2, "area": "Mandalay (Mandalay)", "numberType": "Geographic numbers" },
-  { "ndc": 3, "area": " ", "numberType": "Military numbers" },
+  { "ndc": 3, "area": "Military", "numberType": "Military numbers" },
   { "ndc": 42, "area": "Pathein (Ayeyawady)", "numberType": "Geographic numbers" },
   { "ndc": 43, "area": "Sittway (Rakhine)", "numberType": "Geographic numbers" },
   { "ndc": 44, "area": "Hinthada (Ayeyawady)", "numberType": "Geographic numbers" },

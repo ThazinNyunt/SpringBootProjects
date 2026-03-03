@@ -9,3 +9,81 @@
  NDC not found       -> Optional.empty()
  Prefix not found    -> Operator Not Found
  DB operator missing -> Operator Not Found
+
+
+package com.example.mobilebroker.service.dtos;
+
+public enum NumberType {
+    GEOGRAPHIC,
+    NON_GEOGRAPHIC,
+    MILITARY;
+
+    public static NumberType fromString(String value) {
+        if (value == null) return NON_GEOGRAPHIC;
+
+        value = value.toLowerCase();
+
+        if (value.contains("military")) {
+            return MILITARY;
+        }
+
+        if (value.contains("geographic") && !value.contains("non")) {
+            return GEOGRAPHIC;
+        }
+
+        return NON_GEOGRAPHIC; // default
+    }
+}
+package com.example.mobilebroker.service.dtos;
+
+public record NdcInfo(
+        Integer ndc,
+        String area,
+        NumberType numberType
+) {}
+
+package com.example.mobilebroker.service.dtos;
+
+public record PhoneNumberInfo(
+        String phoneNumber,
+        String operator,
+        NdcInfo ndcInfo
+) {}
+
+NdcInfo ndcInfo = new NdcInfo(
+        matchedNdc.getNdc(),
+        matchedNdc.getArea(),
+        NumberType.fromString(matchedNdc.getNumberType())
+);
+
+return Either.right(
+        new PhoneNumberInfo(
+                phoneNumber,
+                operator.get().getOperatorId(),
+                ndcInfo
+        )
+);
+
+package com.example.mobilebroker.controller.api.dtos;
+
+public record PhoneNumberInfoResponse(
+        String phoneNumber,
+        String operator,
+        Integer ndc,
+        String area,
+        String numberType
+) {}
+
+@GetMapping("/lookup")
+public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
+        @RequestParam String phoneNumber) {
+
+    return service.findOperator(phoneNumber)
+            .map(info -> new PhoneNumberInfoResponse(
+                    info.phoneNumber(),
+                    info.operator(),
+                    info.ndcInfo().ndc(),
+                    info.ndcInfo().area(),
+                    info.ndcInfo().numberType().name()
+            ));
+}

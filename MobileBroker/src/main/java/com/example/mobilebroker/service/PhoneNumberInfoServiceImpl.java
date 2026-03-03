@@ -7,6 +7,7 @@ import com.example.mobilebroker.json.Ndc;
 import com.example.mobilebroker.json.OperatorPrefix;
 import com.example.mobilebroker.model.Operator;
 import com.example.mobilebroker.repository.OperatorRepository;
+import com.example.mobilebroker.service.dtos.PhoneNumberInfo;
 import com.example.mobilebroker.util.PhoneNumberNormalizer;
 import io.vavr.control.Either;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
     }
 
     @Override
-    public Either<Object, PhoneNumberInfoResponse> findOperator(String phoneNumber) {
+    public Either<PhoneNumberInfoLookupError, PhoneNumberInfo> findOperator(String phoneNumber) {
         String nsn = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 9254252784
         Ndc matchedNdc = null;
         for(Ndc ndc : prefixCache.getSortedNdcList()) {
@@ -41,6 +42,7 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
         String remaining = nsn.substring(matchedNdc.getNdc().toString().length()); // 254252784
         List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedNdc.getNdc()); // ndc=9 {}
         if(operatorPrefixes == null || operatorPrefixes.isEmpty()) {
+            //return Either.left(new PhoneNumberInfoLookupError.OperatorNotFound(phoneNumber));
             return Either.right(new PhoneNumberInfoResponse(phoneNumber, "Operator Not Found", matchedNdc.getArea(), matchedNdc.getNumberType()));
         }
 
