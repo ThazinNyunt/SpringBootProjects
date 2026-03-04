@@ -6,7 +6,7 @@ import lombok.Data;
 public class Ndc {
 
     private Integer ndc;
-    private String area;
+    private String serviceArea;
     private String numberType;
 
 }

@@ -7,7 +7,7 @@ public class PhoneNumberNormalizer {
     public static String normalizeToNsn(String phone) {
 
         if (phone == null || phone.isBlank()) {
-            throw new InvalidPhoneNumberException("Phone number is empty");
+            return "error: Phone number is empty!";
         }
 
         phone = phone.replace("+", "").replace(" ", "").replace("-", "");  // +959254252784 -> 959254252784
@@ -17,13 +17,13 @@ public class PhoneNumberNormalizer {
         }
 
         if (!phone.startsWith("95")) {
-            throw new InvalidPhoneNumberException("Invalid Myanmar Phone Number Format");
+            return "error: Invalid Myanmar Phone Number Format";
         }
 
-        phone = phone.substring(2); // 95254252784
+        phone = phone.substring(2); // 959254252784  ->  9254252784
 
-        if (phone.length() < 7 || phone.length() > 10) {
-            throw new InvalidPhoneNumberException("Invalid phone number length");
+        if (phone.length() < 6 || phone.length() > 10) {
+            return "error: Invalid phone number length";
         }
 
         return phone;

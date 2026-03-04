@@ -1,23 +1,19 @@
 package com.example.mobilebroker.service.dtos;
 
-import org.jspecify.annotations.Nullable;
-
-import java.util.Optional;
-
 public class PhoneNumberInfo {
     private final String operator;
-    private final GeographicInfo geographicInfo;
+    private final NdcInfo ndcInfo;
 
-    public PhoneNumberInfo(String operator, @Nullable GeographicInfo geographicInfo) {
+    public PhoneNumberInfo(String operator, NdcInfo ndcInfo) {
         this.operator = operator;
-        this.geographicInfo = geographicInfo;
+        this.ndcInfo = ndcInfo;
     }
 
     public String operator() {
         return operator;
     }
 
-    public Optional<GeographicInfo> geographicInfo() {
-        return Optional.ofNullable(geographicInfo);
+    public NdcInfo ndcInfo() {
+        return ndcInfo;
     }
 }

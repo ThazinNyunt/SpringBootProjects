@@ -87,3 +87,234 @@ public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
                     info.ndcInfo().numberType().name()
             ));
 }
+
+{
+  "Geographic numbers": {
+    "Yangon (Yangon)": [1, 55, 56],
+    "Mandalay (Mandalay)": [2, 64, 66, 85, 86],
+    "Bago (Bago)": [52, 53, 54],
+    "Pathein (Ayeyawady)": [42],
+    "Sittway (Rakhine)": [43],
+    "Hinthada (Ayeyawady)": [44],
+    "Maubin (Ayeyawady)": [45],
+    "Nyaungdon (Ayeyawady)": [46],
+    "Mawlamyine (Mon)": [57],
+    "Hpaan (Kayin)": [58],
+    "Dawei (Tanintharyi)": [59],
+    "Yenangyoung (Magway)": [60],
+    "Chauk (Magway)": [61],
+    "Pakokku (Magway)": [62],
+    "Magway (Magway)": [63],
+    "Minbu (Magway)": [65],
+    "Aunglan (Magway)": [69],
+    "Haka (Chin)": [70],
+    "Monywa (Sagaing)": [71],
+    "Sagaing (Sagaing)": [72],
+    "Kalay (Sagaing)": [73],
+    "Shwebo (Sagaing)": [75],
+    "Myitkyina (Kachin)": [74],
+    "Taunggyi (Shan)": [81],
+    "Lashio (Shan)": [82],
+    "Loikaw (Kayah)": [83],
+    "Kengtung (Shan)": [84],
+    "Naypyitaw (Naypyitaw)": [67],
+    "Thayet (Magway)": [68]
+  },
+  "Non-geographic numbers": {
+    "Mobile": [9],
+    "Location-independent voice services": [10, 11]
+  },
+  "Military numbers": {
+    "Military": [3]
+  }
+}
+
+{
+  "9": {
+    "MPT": [
+      [20, 24],
+      [250, 259],
+      [2600, 2699],
+      [4000, 4599],
+      [470, 479],
+      [490, 499],
+      [500, 569],
+      [730, 739],
+      [830, 919]
+    ],
+    "MecTel": [
+      [300, 339],
+      [34000, 34029],
+      [34600, 34619],
+      [34900, 34909],
+      [360, 369]
+    ],
+    "Mytel": [
+      [6500, 6539],
+      [6600, 6999]
+    ],
+    "ATOM": [
+      [7400, 7409],
+      [7500, 7999]
+    ],
+    "U9": [
+      [940, 989]
+    ]
+  }
+}
+
+
+package com.example.mobilebroker.service.dtos;
+
+public enum NumberType {
+    GEOGRAPHIC,
+    NON_GEOGRAPHIC,
+    MILITARY;
+
+    public static NumberType fromString(String value) {
+        if (value == null) return NON_GEOGRAPHIC;
+
+        value = value.toLowerCase();
+
+        if (value.contains("military")) {
+            return MILITARY;
+        }
+
+        if (value.contains("geographic") && !value.contains("non")) {
+            return GEOGRAPHIC;
+        }
+
+        return NON_GEOGRAPHIC; // default
+    }
+}
+package com.example.mobilebroker.service.dtos;
+
+public record NdcInfo(
+        Integer ndc,
+        String area,
+        NumberType numberType
+) {}
+
+package com.example.mobilebroker.service.dtos;
+
+public record PhoneNumberInfo(
+        String phoneNumber,
+        String operator,
+        NdcInfo ndcInfo
+) {}
+
+NdcInfo ndcInfo = new NdcInfo(
+        matchedNdc.getNdc(),
+        matchedNdc.getArea(),
+        NumberType.fromString(matchedNdc.getNumberType())
+);
+
+return Either.right(
+        new PhoneNumberInfo(
+                phoneNumber,
+                operator.get().getOperatorId(),
+                ndcInfo
+        )
+);
+
+package com.example.mobilebroker.controller.api.dtos;
+
+public record PhoneNumberInfoResponse(
+        String phoneNumber,
+        String operator,
+        Integer ndc,
+        String area,
+        String numberType
+) {}
+
+@GetMapping("/lookup")
+public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
+        @RequestParam String phoneNumber) {
+
+    return service.findOperator(phoneNumber)
+            .map(info -> new PhoneNumberInfoResponse(
+                    info.phoneNumber(),
+                    info.operator(),
+                    info.ndcInfo().ndc(),
+                    info.ndcInfo().area(),
+                    info.ndcInfo().numberType().name()
+            ));
+}
+
+
+package com.example.mobilebroker.service.dtos;
+
+public enum NumberType {
+    GEOGRAPHIC,
+    NON_GEOGRAPHIC,
+    MILITARY;
+
+    public static NumberType fromString(String value) {
+        if (value == null) return NON_GEOGRAPHIC;
+
+        value = value.toLowerCase();
+
+        if (value.contains("military")) {
+            return MILITARY;
+        }
+
+        if (value.contains("geographic") && !value.contains("non")) {
+            return GEOGRAPHIC;
+        }
+
+        return NON_GEOGRAPHIC; // default
+    }
+}
+package com.example.mobilebroker.service.dtos;
+
+public record NdcInfo(
+        Integer ndc,
+        String area,
+        NumberType numberType
+) {}
+
+package com.example.mobilebroker.service.dtos;
+
+public record PhoneNumberInfo(
+        String phoneNumber,
+        String operator,
+        NdcInfo ndcInfo
+) {}
+
+NdcInfo ndcInfo = new NdcInfo(
+        matchedNdc.getNdc(),
+        matchedNdc.getArea(),
+        NumberType.fromString(matchedNdc.getNumberType())
+);
+
+return Either.right(
+        new PhoneNumberInfo(
+                phoneNumber,
+                operator.get().getOperatorId(),
+                ndcInfo
+        )
+);
+
+package com.example.mobilebroker.controller.api.dtos;
+
+public record PhoneNumberInfoResponse(
+        String phoneNumber,
+        String operator,
+        Integer ndc,
+        String area,
+        String numberType
+) {}
+
+@GetMapping("/lookup")
+public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
+        @RequestParam String phoneNumber) {
+
+    return service.findOperator(phoneNumber)
+            .map(info -> new PhoneNumberInfoResponse(
+                    info.phoneNumber(),
+                    info.operator(),
+                    info.ndcInfo().ndc(),
+                    info.ndcInfo().area(),
+                    info.ndcInfo().numberType().name()
+            ));
+}
