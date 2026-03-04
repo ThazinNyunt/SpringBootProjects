@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Operator {
+public class    Operator {
 
     @Id
     @Column(name = "operator_id", nullable = false)

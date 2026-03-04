@@ -1,4 +1,4 @@
-package com.example.mobilebroker.controllers.dtos;
+package com.example.mobilebroker.controllers.api.dtos;
 
 public class PhoneNumberInfoResponse {
 

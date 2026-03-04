@@ -1,6 +1,6 @@
 package com.example.mobilebroker.controllers.api;
 
-import com.example.mobilebroker.controllers.dtos.PhoneNumberInfoResponse;
+import com.example.mobilebroker.controllers.api.dtos.PhoneNumberInfoResponse;
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
 import com.example.mobilebroker.exception.ProblemDetails;
 import com.example.mobilebroker.service.PhoneNumberInfoService;
