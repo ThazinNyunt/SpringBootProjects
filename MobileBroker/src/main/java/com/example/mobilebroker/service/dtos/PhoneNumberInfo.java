@@ -1,16 +1,17 @@
 package com.example.mobilebroker.service.dtos;
 
 public class PhoneNumberInfo {
-    private final String operator;
+
+    private final String operatorCode;
     private final NdcInfo ndcInfo;
 
-    public PhoneNumberInfo(String operator, NdcInfo ndcInfo) {
-        this.operator = operator;
+    public PhoneNumberInfo(String operatorCode, NdcInfo ndcInfo) {
+        this.operatorCode = operatorCode;
         this.ndcInfo = ndcInfo;
     }
 
-    public String operator() {
-        return operator;
+    public String operatorCode() {
+        return operatorCode;
     }
 
     public NdcInfo ndcInfo() {

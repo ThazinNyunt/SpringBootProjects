@@ -50,7 +50,7 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
                 matchedNdc.getNumberType()
         );
         if(operatorPrefixes == null || operatorPrefixes.isEmpty()) {
-            return Either.right(new PhoneNumberInfo("Operator Not Found", ndcInfo));
+            return Either.right(new PhoneNumberInfo("Geographic numbers", ndcInfo));
         }
 
         for(int length = 5; length >=1 ; length--) {
@@ -62,7 +62,7 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
                 String prefixStart = String.valueOf(p.getPrefixStart());
                 String prefixEnd = String.valueOf(p.getPrefixEnd());
                 if(prefix.compareTo(prefixStart) >= 0 && prefix.compareTo(prefixEnd) <= 0) {
-                    Optional<Operator> operator = operatorRepository.findById(p.getOperatorId());
+                    Optional<Operator> operator = operatorRepository.findById(p.getOperatorCode());
                     if(operator.isPresent()) {
                         return Either.right(new PhoneNumberInfo(operator.get().getOperatorId(), ndcInfo));
                     }

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class OperatorPrefix {
 
-    private String operatorId;
+    private String operatorCode;
     private Integer ndc;
     private Integer prefixStart;
     private Integer prefixEnd;

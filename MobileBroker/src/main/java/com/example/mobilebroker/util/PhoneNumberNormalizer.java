@@ -1,7 +1,4 @@
 package com.example.mobilebroker.util;
-
-import com.example.mobilebroker.exception.InvalidPhoneNumberException;
-
 public class PhoneNumberNormalizer {
 
     public static String normalizeToNsn(String phone) {

@@ -23,7 +23,7 @@ public class PhoneNumberInfoController {
         return phoneNumberInfoService.findOperator(phoneNumber)
                 .bimap(
                         this::mapToApiError,
-                        info -> new PhoneNumberInfoResponse(phoneNumber, info.operator(), info.ndcInfo().serviceArea())
+                        info -> new PhoneNumberInfoResponse(phoneNumber, info.operatorCode(), info.ndcInfo().serviceArea())
                 );
     }
 
