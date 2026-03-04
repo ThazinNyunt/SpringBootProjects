@@ -318,3 +318,46 @@ public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
                     info.ndcInfo().numberType().name()
             ));
 }
+
+MobileBroker/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── example/
+│       │           └── mobilebroker/
+│       │               ├── MobileBrokerApplication.java
+│       │               ├── cache/
+│       │               │   └── PrefixCache.java
+│       │               ├── controller/
+│       │               │   ├── api/
+│       │               │   │   └── OperatorController.java
+│       │               │   └── dtos/
+│       │               │       └── PhoneNumberInfoResponse.java
+│       │               ├── error/
+│       │               │   └── PhoneNumberInfoLookupError.java
+│       │               ├── exception/
+│       │               │   ├── GlobalExceptionHandler.java
+│       │               │   ├── InvalidPhoneNumberException.java
+│       │               │   └── ProblemDetails.java
+│       │               ├── json/
+│       │               │   ├── Ndc.java
+│       │               │   └── OperatorPrefix.java
+│       │               ├── model/
+│       │               │   └── Operator.java
+│       │               ├── repository/
+│       │               │   └── OperatorRepository.java
+│       │               ├── service/
+│       │               │   ├── PhoneNumberInfoService.java
+│       │               │   ├── PhoneNumberInfoServiceImpl.java
+│       │               │   └── dtos/
+│       │               │       ├── NdcInfo.java
+│       │               │       └── PhoneNumberInfo.java
+│       │               └── util/
+│       │                   └── PhoneNumberNormalizer.java
+│       └── resources/
+│           ├── application.properties
+│           └── static/
+│               └── (optional static files)
+├── pom.xml
+└── README.md
