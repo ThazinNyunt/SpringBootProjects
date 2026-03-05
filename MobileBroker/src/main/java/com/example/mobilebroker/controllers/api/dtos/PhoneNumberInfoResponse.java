@@ -23,5 +23,4 @@ public class PhoneNumberInfoResponse {
     public String getServiceArea() {
         return serviceArea;
     }
-
 }
