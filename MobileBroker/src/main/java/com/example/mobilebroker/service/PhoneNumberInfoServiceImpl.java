@@ -2,9 +2,9 @@ package com.example.mobilebroker.service;
 
 import com.example.mobilebroker.cache.PrefixCache;
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
-import com.example.mobilebroker.json.Ndc;
-import com.example.mobilebroker.json.OperatorPrefix;
-import com.example.mobilebroker.model.Operator;
+import com.example.mobilebroker.data.Ndc;
+import com.example.mobilebroker.data.OperatorPrefix;
+import com.example.mobilebroker.entity.Operator;
 import com.example.mobilebroker.repository.OperatorRepository;
 import com.example.mobilebroker.service.dtos.NdcInfo;
 import com.example.mobilebroker.service.dtos.PhoneNumberInfo;

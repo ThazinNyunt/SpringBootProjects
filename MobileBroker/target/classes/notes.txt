@@ -1,0 +1,672 @@
+20:24
+250:259
+
+
+
+ null input          -> Exception
+ format invalid      -> Exception
+ length invalid      -> Exception
+ NDC not found       -> Optional.empty()
+ Prefix not found    -> Operator Not Found
+ DB operator missing -> Operator Not Found
+
+
+package com.example.mobilebroker.service.dtos;
+
+public enum NumberType {
+    GEOGRAPHIC,
+    NON_GEOGRAPHIC,
+    MILITARY;
+
+    public static NumberType fromString(String value) {
+        if (value == null) return NON_GEOGRAPHIC;
+
+        value = value.toLowerCase();
+
+        if (value.contains("military")) {
+            return MILITARY;
+        }
+
+        if (value.contains("geographic") && !value.contains("non")) {
+            return GEOGRAPHIC;
+        }
+
+        return NON_GEOGRAPHIC; // default
+    }
+}
+package com.example.mobilebroker.service.dtos;
+
+public record NdcInfo(
+        Integer ndc,
+        String area,
+        NumberType numberType
+) {}
+
+package com.example.mobilebroker.service.dtos;
+
+public record PhoneNumberInfo(
+        String phoneNumber,
+        String operator,
+        NdcInfo ndcInfo
+) {}
+
+NdcInfo ndcInfo = new NdcInfo(
+        matchedNdc.getNdc(),
+        matchedNdc.getArea(),
+        NumberType.fromString(matchedNdc.getNumberType())
+);
+
+return Either.right(
+        new PhoneNumberInfo(
+                phoneNumber,
+                operator.get().getOperatorId(),
+                ndcInfo
+        )
+);
+
+package com.example.mobilebroker.controller.api.dtos;
+
+public record PhoneNumberInfoResponse(
+        String phoneNumber,
+        String operator,
+        Integer ndc,
+        String area,
+        String numberType
+) {}
+
+@GetMapping("/lookup")
+public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
+        @RequestParam String phoneNumber) {
+
+    return service.findOperator(phoneNumber)
+            .map(info -> new PhoneNumberInfoResponse(
+                    info.phoneNumber(),
+                    info.operator(),
+                    info.ndcInfo().ndc(),
+                    info.ndcInfo().area(),
+                    info.ndcInfo().numberType().name()
+            ));
+}
+
+{
+  "Geographic numbers": {
+    "Yangon (Yangon)": [1, 55, 56],
+    "Mandalay (Mandalay)": [2, 64, 66, 85, 86],
+    "Bago (Bago)": [52, 53, 54],
+    "Pathein (Ayeyawady)": [42],
+    "Sittway (Rakhine)": [43],
+    "Hinthada (Ayeyawady)": [44],
+    "Maubin (Ayeyawady)": [45],
+    "Nyaungdon (Ayeyawady)": [46],
+    "Mawlamyine (Mon)": [57],
+    "Hpaan (Kayin)": [58],
+    "Dawei (Tanintharyi)": [59],
+    "Yenangyoung (Magway)": [60],
+    "Chauk (Magway)": [61],
+    "Pakokku (Magway)": [62],
+    "Magway (Magway)": [63],
+    "Minbu (Magway)": [65],
+    "Aunglan (Magway)": [69],
+    "Haka (Chin)": [70],
+    "Monywa (Sagaing)": [71],
+    "Sagaing (Sagaing)": [72],
+    "Kalay (Sagaing)": [73],
+    "Shwebo (Sagaing)": [75],
+    "Myitkyina (Kachin)": [74],
+    "Taunggyi (Shan)": [81],
+    "Lashio (Shan)": [82],
+    "Loikaw (Kayah)": [83],
+    "Kengtung (Shan)": [84],
+    "Naypyitaw (Naypyitaw)": [67],
+    "Thayet (Magway)": [68]
+  },
+  "Non-geographic numbers": {
+    "Mobile": [9],
+    "Location-independent voice services": [10, 11]
+  },
+  "Military numbers": {
+    "Military": [3]
+  }
+}
+
+{
+  "9": {
+    "MPT": [
+      [20, 24],
+      [250, 259],
+      [2600, 2699],
+      [4000, 4599],
+      [470, 479],
+      [490, 499],
+      [500, 569],
+      [730, 739],
+      [830, 919]
+    ],
+    "MecTel": [
+      [300, 339],
+      [34000, 34029],
+      [34600, 34619],
+      [34900, 34909],
+      [360, 369]
+    ],
+    "Mytel": [
+      [6500, 6539],
+      [6600, 6999]
+    ],
+    "ATOM": [
+      [7400, 7409],
+      [7500, 7999]
+    ],
+    "U9": [
+      [940, 989]
+    ]
+  }
+}
+
+
+package com.example.mobilebroker.service.dtos;
+
+public enum NumberType {
+    GEOGRAPHIC,
+    NON_GEOGRAPHIC,
+    MILITARY;
+
+    public static NumberType fromString(String value) {
+        if (value == null) return NON_GEOGRAPHIC;
+
+        value = value.toLowerCase();
+
+        if (value.contains("military")) {
+            return MILITARY;
+        }
+
+        if (value.contains("geographic") && !value.contains("non")) {
+            return GEOGRAPHIC;
+        }
+
+        return NON_GEOGRAPHIC; // default
+    }
+}
+package com.example.mobilebroker.service.dtos;
+
+public record NdcInfo(
+        Integer ndc,
+        String area,
+        NumberType numberType
+) {}
+
+package com.example.mobilebroker.service.dtos;
+
+public record PhoneNumberInfo(
+        String phoneNumber,
+        String operator,
+        NdcInfo ndcInfo
+) {}
+
+NdcInfo ndcInfo = new NdcInfo(
+        matchedNdc.getNdc(),
+        matchedNdc.getArea(),
+        NumberType.fromString(matchedNdc.getNumberType())
+);
+
+return Either.right(
+        new PhoneNumberInfo(
+                phoneNumber,
+                operator.get().getOperatorId(),
+                ndcInfo
+        )
+);
+
+package com.example.mobilebroker.controller.api.dtos;
+
+public record PhoneNumberInfoResponse(
+        String phoneNumber,
+        String operator,
+        Integer ndc,
+        String area,
+        String numberType
+) {}
+
+@GetMapping("/lookup")
+public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
+        @RequestParam String phoneNumber) {
+
+    return service.findOperator(phoneNumber)
+            .map(info -> new PhoneNumberInfoResponse(
+                    info.phoneNumber(),
+                    info.operator(),
+                    info.ndcInfo().ndc(),
+                    info.ndcInfo().area(),
+                    info.ndcInfo().numberType().name()
+            ));
+}
+
+
+package com.example.mobilebroker.service.dtos;
+
+public enum NumberType {
+    GEOGRAPHIC,
+    NON_GEOGRAPHIC,
+    MILITARY;
+
+    public static NumberType fromString(String value) {
+        if (value == null) return NON_GEOGRAPHIC;
+
+        value = value.toLowerCase();
+
+        if (value.contains("military")) {
+            return MILITARY;
+        }
+
+        if (value.contains("geographic") && !value.contains("non")) {
+            return GEOGRAPHIC;
+        }
+
+        return NON_GEOGRAPHIC; // default
+    }
+}
+package com.example.mobilebroker.service.dtos;
+
+public record NdcInfo(
+        Integer ndc,
+        String area,
+        NumberType numberType
+) {}
+
+package com.example.mobilebroker.service.dtos;
+
+public record PhoneNumberInfo(
+        String phoneNumber,
+        String operator,
+        NdcInfo ndcInfo
+) {}
+
+NdcInfo ndcInfo = new NdcInfo(
+        matchedNdc.getNdc(),
+        matchedNdc.getArea(),
+        NumberType.fromString(matchedNdc.getNumberType())
+);
+
+return Either.right(
+        new PhoneNumberInfo(
+                phoneNumber,
+                operator.get().getOperatorId(),
+                ndcInfo
+        )
+);
+
+package com.example.mobilebroker.controller.api.dtos;
+
+public record PhoneNumberInfoResponse(
+        String phoneNumber,
+        String operator,
+        Integer ndc,
+        String area,
+        String numberType
+) {}
+
+@GetMapping("/lookup")
+public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
+        @RequestParam String phoneNumber) {
+
+    return service.findOperator(phoneNumber)
+            .map(info -> new PhoneNumberInfoResponse(
+                    info.phoneNumber(),
+                    info.operator(),
+                    info.ndcInfo().ndc(),
+                    info.ndcInfo().area(),
+                    info.ndcInfo().numberType().name()
+            ));
+}
+
+MobileBroker/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── example/
+│       │           └── mobilebroker/
+│       │               ├── MobileBrokerApplication.java
+│       │               ├── cache/
+│       │               │   └── PrefixCache.java
+│       │               ├── controller/
+│       │               │   ├── api/
+│       │               │   │   └── OperatorController.java
+│       │               │   └── dtos/
+│       │               │       └── PhoneNumberInfoResponse.java
+│       │               ├── error/
+│       │               │   └── PhoneNumberInfoLookupError.java
+│       │               ├── exception/
+│       │               │   ├── GlobalExceptionHandler.java
+│       │               │   ├── InvalidPhoneNumberException.java
+│       │               │   └── ProblemDetails.java
+│       │               ├── json/
+│       │               │   ├── Ndc.java
+│       │               │   └── OperatorPrefix.java
+│       │               ├── model/
+│       │               │   └── Operator.java
+│       │               ├── repository/
+│       │               │   └── OperatorRepository.java
+│       │               ├── service/
+│       │               │   ├── PhoneNumberInfoService.java
+│       │               │   ├── PhoneNumberInfoServiceImpl.java
+│       │               │   └── dtos/
+│       │               │       ├── NdcInfo.java
+│       │               │       └── PhoneNumberInfo.java
+│       │               └── util/
+│       │                   └── PhoneNumberNormalizer.java
+│       └── resources/
+│           ├── application.properties
+│           └── static/
+│               └── (optional static files)
+├── pom.xml
+└── README.md
+
+mobilebroker
+├── controller
+│
+├── service
+│
+├── domain
+│
+├── infrastructure
+│   ├── telecom
+│   ├── persistence
+│   └── cache
+│
+├── exception
+├── error
+└── util
+
+mobilebroker
+│
+├── controller                 (Adapter Layer)
+│   └── api
+│       ├── OperatorController.java
+│       └── dtos
+│           └── PhoneNumberInfoResponse.java
+│
+├── service                    (Application Layer)
+│   ├── PhoneNumberInfoService.java
+│   ├── PhoneNumberInfoServiceImpl.java
+│   └── dtos
+│       └── PhoneNumberInfo.java
+│
+├── domain                     (Domain Layer)
+│   └── NdcInfo.java
+│
+├── infrastructure             (Infrastructure Layer)
+│   ├── cache
+│   │   └── PrefixCache.java
+│   │
+│   ├── telecom
+│   │   ├── Ndc.java
+│   │   └── OperatorPrefix.java
+│   │
+│   ├── persistence
+│   │   ├── entity
+│   │   │   └── OperatorEntity.java
+│   │   └── repository
+│   │       └── OperatorRepository.java
+│
+├── exception
+│   ├── GlobalExceptionHandler.java
+│   ├── InvalidPhoneNumberException.java
+│   └── ProblemDetails.java
+│
+├── error
+│   └── PhoneNumberInfoLookupError.java
+│
+├── util
+│   └── PhoneNumberNormalizer.java
+
+
+MobileBroker/
+├── src/main/java/com/example/mobilebroker
+│
+│   ├── MobileBrokerApplication.java
+│
+│   ├── cache/
+│   │   └── PrefixCache.java
+│
+│   ├── controller/
+│   │   ├── api/
+│   │   │   └── OperatorController.java
+│   │   └── dto/
+│   │       └── PhoneNumberInfoResponse.java
+│
+│   ├── entity/                <-- database tables
+│   │   └── Operator.java
+│
+│   ├── repository/
+│   │   └── OperatorRepository.java
+│
+│   ├── service/
+│   │   ├── PhoneNumberInfoService.java
+│   │   ├── PhoneNumberInfoServiceImpl.java
+│   │   └── dtos/              <-- domain objects used by service
+│   │       ├── PhoneNumberInfo.java
+│   │       └── GeographicInfo.java
+│
+│   ├── data/                   <-- data loaded from JSON/CSV
+│   │   ├── Ndc.java
+│   │   └── OperatorPrefix.java
+│
+│   ├── exception/
+│   │   ├── GlobalExceptionHandler.java
+│   │   ├── PhoneNumberInfoLookupError.java
+│   │   └── ProblemDetails.java
+│
+│   └── util/
+│       └── PhoneNumberNormalizer.java
+│
+└── src/main/resources
+    ├── application.properties
+    ├── ndc.json
+    └── operator-prefix.json
+
+┌─────────────────────────────┐
+│       Adapter Layer         │  ← Controller DTOs
+├─────────────────────────────┤
+│       Application Layer     │  ← Services
+├─────────────────────────────┤
+│        Domain Layer         │  ← Domain Models
+├─────────────────────────────┤
+│     Infrastructure Layer    │  ← Database, JPA, Redis, JSON, etc.
+└─────────────────────────────┘
+
+Controller DTO      →   Adapter Layer
+Domain Model        →   Domain Layer
+Persistent Model    →   Infrastructure Layer
+
+Controller → Service → Domain Model → Repository → Persistent Model → Database
+
+
+| Layer          | Responsibility    | Example in your system  |
+| -------------- | ----------------- | ----------------------- |
+| Controller     | HTTP              | OperatorController      |
+| Controller DTO | API response      | PhoneNumberInfoResponse |
+| Service        | Use cases         | PhoneNumberInfoService  |
+| Service DTO    | Business result   | PhoneNumberInfo         |
+| Domain         | Business concepts | Ndc, OperatorPrefix     |
+| Persistence    | DB mapping        | Operator                |
+| Infrastructure | File/Cache        | PrefixCache             |
+
+
+| Persistent Model         | Domain Model            |
+| ------------------------ | ----------------------- |
+| Database mapping         | Business meaning        |
+| Has @Entity              | No JPA                  |
+| Used in repository       | Used in service         |
+| Can change with DB       | Stable                  |
+| How DB stores data       | What business means     |
+| Can change if DB changes | Stable if business same |
+| Technical                | Business-focused        |
+
+1.  Persistent Model     →     Infrastructure Layer
+Anything that connects your system to the outside world:
+- Database (JPA)
+- Redis
+- JSON files
+- REST calls to other systems
+- Messaging systems
+These are technical details, not business logic.
+EXAMPLE:
+    model/Operator.java
+    @Entity
+    public class Operator {
+        private String operatorId;
+    }
+
+
+2.  Domain Model    →    Domain Layer
+This is the most important layer.
+It represents:
+    Pure business concepts and rules.
+No:
+    Database annotations
+    REST annotations
+    Spring annotations
+    HTTP logic
+Only business meaning.
+EXAMPLE:
+    public class PhoneNumberInfo {
+        private final String operator;
+        private final NdcInfo ndcInfo;
+    }
+It’s about your core business rule:
+    Given a phone number → find operator + number classification
+That’s domain logic.
+
+
+3️.  Controller DTO     →    Adapter Layer
+It adapts your system to the outside world.
+- REST Controller
+- Kafka Listener
+- GraphQL Controller
+- CLI input
+- WebSocket
+These convert:
+    HTTP → Domain
+    Domain → JSON
+EXAMPLE:
+    controller/api/dtos/PhoneNumberInfoResponse.java
+    public class PhoneNumberInfoResponse {
+        private String phoneNumber;
+        private String operator;
+        private String area;
+        private String numberType;
+    }
+This exists only for:
+    API Response formatting.
+It has nothing to do with:
+    Business rules
+    Database storage
+It’s just formatting output.
+
+
+
+Client → Controller → Service → Domain → Repository → Database
+
+            HTTP Request
+               ↓
+            Controller (Adapter)
+               ↓
+            Service (Application)
+               ↓
+            Domain Model (Business Meaning)
+               ↓
+            Repository
+               ↓
+            Persistent Model (@Entity)
+               ↓
+            Database
+
+
+Client calls:
+    GET /phone-numbers/09254252784
+
+Controller (Adapter Layer)
+- Receives string
+- Calls service
+Returns:
+    {
+      "phoneNumber": "09254252784",
+      "operator": "MPT",
+      "serviceArea": "Mobile"
+    }
+** Controller doesn’t care how operator is found.
+
+Service (Application Layer)
+Orchestrates:
+    Normalize phone
+    Find NDC
+    Match prefix
+    Fetch operator
+
+Domain Layer
+Represents result:
+    PhoneNumberInfo(operator="MPT", region="Mobile")
+Pure business meaning.
+
+Infrastructure Layer
+- OperatorRepository
+- Operator (@Entity)
+- PrefixCache
+- JSON files
+- Database
+All technical.
+
+Simple Analogy
+----------------
+Imagine a restaurant:
+    Domain Layer → The Recipe
+        The real cooking logic.
+    Infrastructure Layer → Kitchen equipment
+        Oven, fridge, ingredients storage.
+    Adapter Layer → Waiter
+        Takes order and serves food.
+
+The waiter does not cook.
+The oven does not decide recipe.
+The recipe does not talk to customer.
+
+Each has a role.
+
+
+Your Project Structure
+
+entity/             → Persistent (Infrastructure)
+repository/         → Infrastructure
+data/               → Infrastructure
+cache/              → Infrastructure
+
+service/dtos/       → Domain
+service/            → Application
+
+controller/api/     → Adapter
+controller/dtos/    → Adapter
+exception/          → Adapter (HTTP concern)
+
+
+        ┌─────────────────────┐
+        │     Adapter Layer   │
+        │  (Controller, DTO)  │
+        └─────────↓───────────┘
+        ┌─────────────────────┐
+        │   Application Layer │
+        │      (Service)      │
+        └─────────↓───────────┘
+        ┌─────────────────────┐
+        │     Domain Layer    │
+        │  (PhoneNumberInfo)  │
+        └─────────↑───────────┘
+        ┌─────────────────────┐
+        │ Infrastructure Layer│
+        │ DB, Cache, JSON     │
+        └─────────────────────┘
+
+
+
+
+

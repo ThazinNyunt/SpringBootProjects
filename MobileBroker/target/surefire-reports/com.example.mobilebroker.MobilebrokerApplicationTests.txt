@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.mobilebroker.MobilebrokerApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.311 s -- in com.example.mobilebroker.MobilebrokerApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.948 s -- in com.example.mobilebroker.MobilebrokerApplicationTests

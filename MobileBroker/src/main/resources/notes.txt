@@ -361,3 +361,312 @@ MobileBroker/
 │               └── (optional static files)
 ├── pom.xml
 └── README.md
+
+mobilebroker
+├── controller
+│
+├── service
+│
+├── domain
+│
+├── infrastructure
+│   ├── telecom
+│   ├── persistence
+│   └── cache
+│
+├── exception
+├── error
+└── util
+
+mobilebroker
+│
+├── controller                 (Adapter Layer)
+│   └── api
+│       ├── OperatorController.java
+│       └── dtos
+│           └── PhoneNumberInfoResponse.java
+│
+├── service                    (Application Layer)
+│   ├── PhoneNumberInfoService.java
+│   ├── PhoneNumberInfoServiceImpl.java
+│   └── dtos
+│       └── PhoneNumberInfo.java
+│
+├── domain                     (Domain Layer)
+│   └── NdcInfo.java
+│
+├── infrastructure             (Infrastructure Layer)
+│   ├── cache
+│   │   └── PrefixCache.java
+│   │
+│   ├── telecom
+│   │   ├── Ndc.java
+│   │   └── OperatorPrefix.java
+│   │
+│   ├── persistence
+│   │   ├── entity
+│   │   │   └── OperatorEntity.java
+│   │   └── repository
+│   │       └── OperatorRepository.java
+│
+├── exception
+│   ├── GlobalExceptionHandler.java
+│   ├── InvalidPhoneNumberException.java
+│   └── ProblemDetails.java
+│
+├── error
+│   └── PhoneNumberInfoLookupError.java
+│
+├── util
+│   └── PhoneNumberNormalizer.java
+
+
+MobileBroker/
+├── src/main/java/com/example/mobilebroker
+│
+│   ├── MobileBrokerApplication.java
+│
+│   ├── cache/
+│   │   └── PrefixCache.java
+│
+│   ├── controller/
+│   │   ├── api/
+│   │   │   └── OperatorController.java
+│   │   └── dto/
+│   │       └── PhoneNumberInfoResponse.java
+│
+│   ├── entity/                <-- database tables
+│   │   └── Operator.java
+│
+│   ├── repository/
+│   │   └── OperatorRepository.java
+│
+│   ├── service/
+│   │   ├── PhoneNumberInfoService.java
+│   │   ├── PhoneNumberInfoServiceImpl.java
+│   │   └── dtos/              <-- domain objects used by service
+│   │       ├── PhoneNumberInfo.java
+│   │       └── GeographicInfo.java
+│
+│   ├── data/                   <-- data loaded from JSON/CSV
+│   │   ├── Ndc.java
+│   │   └── OperatorPrefix.java
+│
+│   ├── exception/
+│   │   ├── GlobalExceptionHandler.java
+│   │   ├── PhoneNumberInfoLookupError.java
+│   │   └── ProblemDetails.java
+│
+│   └── util/
+│       └── PhoneNumberNormalizer.java
+│
+└── src/main/resources
+    ├── application.properties
+    ├── ndc.json
+    └── operator-prefix.json
+
+┌─────────────────────────────┐
+│       Adapter Layer         │  ← Controller DTOs
+├─────────────────────────────┤
+│       Application Layer     │  ← Services
+├─────────────────────────────┤
+│        Domain Layer         │  ← Domain Models
+├─────────────────────────────┤
+│     Infrastructure Layer    │  ← Database, JPA, Redis, JSON, etc.
+└─────────────────────────────┘
+
+Controller DTO      →   Adapter Layer
+Domain Model        →   Domain Layer
+Persistent Model    →   Infrastructure Layer
+
+Controller → Service → Domain Model → Repository → Persistent Model → Database
+
+
+| Layer          | Responsibility    | Example in your system  |
+| -------------- | ----------------- | ----------------------- |
+| Controller     | HTTP              | OperatorController      |
+| Controller DTO | API response      | PhoneNumberInfoResponse |
+| Service        | Use cases         | PhoneNumberInfoService  |
+| Service DTO    | Business result   | PhoneNumberInfo         |
+| Domain         | Business concepts | Ndc, OperatorPrefix     |
+| Persistence    | DB mapping        | Operator                |
+| Infrastructure | File/Cache        | PrefixCache             |
+
+
+| Persistent Model         | Domain Model            |
+| ------------------------ | ----------------------- |
+| Database mapping         | Business meaning        |
+| Has @Entity              | No JPA                  |
+| Used in repository       | Used in service         |
+| Can change with DB       | Stable                  |
+| How DB stores data       | What business means     |
+| Can change if DB changes | Stable if business same |
+| Technical                | Business-focused        |
+
+1.  Persistent Model     →     Infrastructure Layer
+Anything that connects your system to the outside world:
+- Database (JPA)
+- Redis
+- JSON files
+- REST calls to other systems
+- Messaging systems
+These are technical details, not business logic.
+EXAMPLE:
+    model/Operator.java
+    @Entity
+    public class Operator {
+        private String operatorId;
+    }
+
+
+2.  Domain Model    →    Domain Layer
+This is the most important layer.
+It represents:
+    Pure business concepts and rules.
+No:
+    Database annotations
+    REST annotations
+    Spring annotations
+    HTTP logic
+Only business meaning.
+EXAMPLE:
+    public class PhoneNumberInfo {
+        private final String operator;
+        private final NdcInfo ndcInfo;
+    }
+It’s about your core business rule:
+    Given a phone number → find operator + number classification
+That’s domain logic.
+
+
+3️.  Controller DTO     →    Adapter Layer
+It adapts your system to the outside world.
+- REST Controller
+- Kafka Listener
+- GraphQL Controller
+- CLI input
+- WebSocket
+These convert:
+    HTTP → Domain
+    Domain → JSON
+EXAMPLE:
+    controller/api/dtos/PhoneNumberInfoResponse.java
+    public class PhoneNumberInfoResponse {
+        private String phoneNumber;
+        private String operator;
+        private String area;
+        private String numberType;
+    }
+This exists only for:
+    API Response formatting.
+It has nothing to do with:
+    Business rules
+    Database storage
+It’s just formatting output.
+
+
+
+Client → Controller → Service → Domain → Repository → Database
+
+            HTTP Request
+               ↓
+            Controller (Adapter)
+               ↓
+            Service (Application)
+               ↓
+            Domain Model (Business Meaning)
+               ↓
+            Repository
+               ↓
+            Persistent Model (@Entity)
+               ↓
+            Database
+
+
+Client calls:
+    GET /phone-numbers/09254252784
+
+Controller (Adapter Layer)
+- Receives string
+- Calls service
+Returns:
+    {
+      "phoneNumber": "09254252784",
+      "operator": "MPT",
+      "serviceArea": "Mobile"
+    }
+** Controller doesn’t care how operator is found.
+
+Service (Application Layer)
+Orchestrates:
+    Normalize phone
+    Find NDC
+    Match prefix
+    Fetch operator
+
+Domain Layer
+Represents result:
+    PhoneNumberInfo(operator="MPT", region="Mobile")
+Pure business meaning.
+
+Infrastructure Layer
+- OperatorRepository
+- Operator (@Entity)
+- PrefixCache
+- JSON files
+- Database
+All technical.
+
+Simple Analogy
+----------------
+Imagine a restaurant:
+    Domain Layer → The Recipe
+        The real cooking logic.
+    Infrastructure Layer → Kitchen equipment
+        Oven, fridge, ingredients storage.
+    Adapter Layer → Waiter
+        Takes order and serves food.
+
+The waiter does not cook.
+The oven does not decide recipe.
+The recipe does not talk to customer.
+
+Each has a role.
+
+
+Your Project Structure
+
+entity/             → Persistent (Infrastructure)
+repository/         → Infrastructure
+data/               → Infrastructure
+cache/              → Infrastructure
+
+service/dtos/       → Domain
+service/            → Application
+
+controller/api/     → Adapter
+controller/dtos/    → Adapter
+exception/          → Adapter (HTTP concern)
+
+
+        ┌─────────────────────┐
+        │     Adapter Layer   │
+        │  (Controller, DTO)  │
+        └─────────↓───────────┘
+        ┌─────────────────────┐
+        │   Application Layer │
+        │      (Service)      │
+        └─────────↓───────────┘
+        ┌─────────────────────┐
+        │     Domain Layer    │
+        │  (PhoneNumberInfo)  │
+        └─────────↑───────────┘
+        ┌─────────────────────┐
+        │ Infrastructure Layer│
+        │ DB, Cache, JSON     │
+        └─────────────────────┘
+
+
+
+
+
