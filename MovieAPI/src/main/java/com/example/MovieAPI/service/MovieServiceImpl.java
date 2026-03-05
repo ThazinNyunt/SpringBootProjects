@@ -1,6 +1,7 @@
 package com.example.MovieAPI.service;
 
 import com.example.MovieAPI.dto.MovieDto;
+import com.example.MovieAPI.entities.Movie;
 import com.example.MovieAPI.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class MovieServiceImpl implements MovieService {
     @Value("${project.poster}")
     private String  path;
 
+    @Value("${base.url}")
+    private String baseUrl;
+
     public MovieServiceImpl(MovieRepository movieRepository, FileService fileService) {
         this.movieRepository = movieRepository;
         this.fileService = fileService;
@@ -33,12 +37,35 @@ public class MovieServiceImpl implements MovieService {
         movieDto.setPoster(uploadedFileName);
 
         // 3. map dto to Movie object
+        Movie movie = new Movie(
+                movieDto.getMovieId(),
+                movieDto.getTitle(),
+                movieDto.getDirector(),
+                movieDto.getStudio(),
+                movieDto.getMovieCast(),
+                movieDto.getReleaseYear(),
+                movieDto.getPoster()
+        );
 
         // 4. save the movie object -> saved Movie object
-        // 5. generate the posterUrl
-        // 6. map Movie object to DTO object and return it
+        Movie savedMovie = movieRepository.save(movie);
 
-        return null;
+        // 5. generate the posterUrl
+        String posterUrl = baseUrl + "/file/" + uploadedFileName;
+
+        // 6. map Movie object to DTO object and return it
+        MovieDto response = new MovieDto(
+                savedMovie.getMovieId(),
+                savedMovie.getTitle(),
+                savedMovie.getDirector(),
+                savedMovie.getStudio(),
+                savedMovie.getMovieCast(),
+                savedMovie.getReleaseYear(),
+                savedMovie.getPoster(),
+                posterUrl
+        );
+
+        return response;
     }
 
     @Override

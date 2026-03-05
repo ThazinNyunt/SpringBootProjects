@@ -1,0 +1,22 @@
+[
+  {
+    "movieId" : 1,
+    "title" : "Avengers: Infinity War",
+    "director" : "Russo Brothers",
+    "studio" : "Marvel Studios",
+    "movieCast" : ["RDJ", "Chris Evans", "Scarlett Johansson"],
+    "releaseYear" : 2018,
+    "poster" : "",
+    "posterUrl" : "url"
+  },
+  {
+    "movieId" : 1,
+    "title" : "Avengers: Infinity War",
+    "director" : "Russo Brothers",
+    "studio" : "Marvel Studios",
+    "movieCast" : ["RDJ", "Chris Evans", "Scarlett Johansson"],
+    "releaseYear" : 2018,
+    "poster" : "",
+    "posterUrl" : "url"
+  }
+]

@@ -49,7 +49,7 @@ public class PhoneNumberInfoController {
                 .type("https://example.com/problems/operator-not-found")
                 .title("Operator Not Found")
                 .status(HttpStatus.BAD_REQUEST.value())
-                .detail("No operator found for: " + e.phoneNumber())
+                .detail("No operatorCode found for: " + e.phoneNumber())
                 .build();
     }
 
