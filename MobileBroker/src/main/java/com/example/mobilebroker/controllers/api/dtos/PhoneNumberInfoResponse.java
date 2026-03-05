@@ -19,7 +19,6 @@ public class PhoneNumberInfoResponse {
     public String getOperator() {
         return operator;
     }
-
     public String getServiceArea() {
         return serviceArea;
     }
