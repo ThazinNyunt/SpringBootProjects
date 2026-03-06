@@ -4,6 +4,7 @@
 4️⃣ Client sends key in request header
 5️⃣ Server validates key before processing
 
+Instead of storing the raw API key, store a hashed version (SHA-256) just like passwords. This prevents leaks if the database is compromised.
 
 import java.security.SecureRandom;
 import java.util.Base64;
