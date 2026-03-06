@@ -30,12 +30,10 @@ public class SmsController {
         ).bimap(
                 this::mapToApiError,
                 result -> new SmsSendResponse(
-                        result.messageId(),
-                        result.message(),
-                        result.to(),
-                        result.network(),
-                        result.from(),
                         result.status(),
+                        result.provider(),
+                        result.httpStatus(),
+                        result.operator(),
                         result.createdAt()
                 )
         );

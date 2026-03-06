@@ -23,7 +23,7 @@ public class PhoneNumberInfoController {
         return phoneNumberInfoService.findOperator(phoneNumber)
                 .bimap(
                         this::mapToApiError,
-                        info -> new PhoneNumberInfoResponse(phoneNumber, info.operatorCode(), info.ndcInfo().serviceArea())
+                        info -> new PhoneNumberInfoResponse(phoneNumber, info.operator(), info.ndcInfo().serviceArea())
                 );
     }
 
@@ -49,7 +49,7 @@ public class PhoneNumberInfoController {
                 .type("https://example.com/problems/operator-not-found")
                 .title("Operator Not Found")
                 .status(HttpStatus.BAD_REQUEST.value())
-                .detail("No operatorCode found for: " + e.phoneNumber())
+                .detail("No operator found for: " + e.phoneNumber())
                 .build();
     }
 

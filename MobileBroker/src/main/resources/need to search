@@ -1,0 +1,121 @@
+1️⃣ Generate API key
+2️⃣ Save in database
+3️⃣ Give key to client
+4️⃣ Client sends key in request header
+5️⃣ Server validates key before processing
+
+
+import java.security.SecureRandom;
+import java.util.Base64;
+
+public class ApiKeyGenerator {
+
+    public static String generate() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[32];
+        random.nextBytes(bytes);
+
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(bytes);
+    }
+
+    public static void main(String[] args) {
+        String apiKey = generate();
+        System.out.println("Generated API Key: " + apiKey);
+    }
+}
+
+CREATE TABLE api_keys (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    api_key VARCHAR(255) UNIQUE,
+    client_name VARCHAR(100),
+    active BOOLEAN DEFAULT TRUE
+);
+
+@Entity
+public class ApiKey {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String apiKey;
+
+    private String clientName;
+
+    private boolean active;
+
+    // getters and setters
+}
+
+@Repository
+public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
+}
+
+@Service
+public class ApiKeyService {
+
+    private final ApiKeyRepository repository;
+
+    public ApiKeyService(ApiKeyRepository repository) {
+        this.repository = repository;
+    }
+
+    public String createApiKey(String clientName) {
+
+        String key = ApiKeyGenerator.generate();
+
+        ApiKey apiKey = new ApiKey();
+        apiKey.setApiKey(key);
+        apiKey.setClientName(clientName);
+        apiKey.setActive(true);
+
+        repository.save(apiKey);
+
+        return key;
+    }
+}
+@RestController
+@RequestMapping("/api/keys")
+public class ApiKeyController {
+
+    private final ApiKeyService apiKeyService;
+
+    public ApiKeyController(ApiKeyService apiKeyService) {
+        this.apiKeyService = apiKeyService;
+    }
+
+    @PostMapping("/generate")
+    public String generateKey(@RequestParam String client) {
+        return apiKeyService.createApiKey(client);
+    }
+}
+POST /api/keys/generate?client=mobile-app
+
+@Component
+public class ApiKeyFilter extends OncePerRequestFilter {
+
+    private final ApiKeyRepository apiKeyRepository;
+
+    public ApiKeyFilter(ApiKeyRepository apiKeyRepository) {
+        this.apiKeyRepository = apiKeyRepository;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+                                    throws ServletException, IOException {
+
+        String apiKey = request.getHeader("x-api-key");
+
+        if (apiKey == null || !apiKeyRepository.existsByApiKeyAndActiveTrue(apiKey)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid API Key");
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}

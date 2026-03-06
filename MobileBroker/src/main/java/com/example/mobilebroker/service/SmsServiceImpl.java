@@ -1,13 +1,15 @@
 package com.example.mobilebroker.service;
 
-import com.example.mobilebroker.client.SmsPohClient;
-import com.example.mobilebroker.client.dtos.SmsPohRequest;
-import com.example.mobilebroker.client.dtos.SmsPohResponse;
+
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
+import com.example.mobilebroker.integrations.smspoh.SmsPohClient;
+import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohRequest;
+import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohResponse;
 import com.example.mobilebroker.service.dtos.PhoneNumberInfo;
 import com.example.mobilebroker.service.dtos.SmsRequest;
 import com.example.mobilebroker.service.dtos.SmsResult;
 import io.vavr.control.Either;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,29 +38,30 @@ public class SmsServiceImpl implements SmsService {
                 request.from()
         );
 
-        SmsPohResponse response = smsPohClient.sendSms(smsPohRequest);
+         ResponseEntity<SmsPohResponse> responseEntity = smsPohClient.sendSms(smsPohRequest);
 
-        SmsResult smsResult = getSmsResult(response);
+        SmsResult smsResult = getSmsResult(responseEntity);
 
         return Either.right(smsResult);
     }
 
-    private static SmsResult getSmsResult(SmsPohResponse response) {
+    private SmsResult getSmsResult(ResponseEntity<SmsPohResponse> responseEntity) {
 
-        if (response.getMessages() == null || response.getMessages().isEmpty()) {
+        SmsPohResponse body = responseEntity.getBody();
+
+        if (body == null || body.getMessages() == null || body.getMessages().isEmpty()) {
             throw new RuntimeException("SMS provider returned empty response");
         }
 
-        SmsPohResponse.Message message = response.getMessages().get(0);
+        SmsPohResponse.Message message = body.getMessages().get(0);
 
         return new SmsResult(
-                message.getMessageId(),
-                message.getMessage(),
-                message.getTo(),
-                message.getNetwork(),
-                message.getFrom(),
                 message.getStatus(),
+                smsPohClient.getProviderName(),
+                responseEntity.getStatusCode().value(),
+                message.getNetwork(),
                 message.getCreatedAt()
         );
+
     }
 }

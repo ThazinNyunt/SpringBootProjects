@@ -1,4 +1,4 @@
-package com.example.mobilebroker.client.dtos;
+package com.example.mobilebroker.integrations.smspoh.dtos;
 
 public class SmsPohRequest {
 

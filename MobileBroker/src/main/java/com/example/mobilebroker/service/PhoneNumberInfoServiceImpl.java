@@ -62,7 +62,7 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
                 String prefixStart = String.valueOf(p.getPrefixStart());
                 String prefixEnd = String.valueOf(p.getPrefixEnd());
                 if(prefix.compareTo(prefixStart) >= 0 && prefix.compareTo(prefixEnd) <= 0) {
-                    Optional<Operator> operator = operatorRepository.findById(p.getOperatorCode());
+                    Optional<Operator> operator = operatorRepository.findById(p.getOperator());
                     if(operator.isPresent()) {
                         return Either.right(new PhoneNumberInfo(operator.get().getOperatorId(), ndcInfo));
                     }

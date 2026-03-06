@@ -15,7 +15,6 @@ public class PhoneNumberInfoResponse {
     public String getPhoneNumber() {
         return phoneNumber;
     }
-
     public String getOperator() {
         return operator;
     }

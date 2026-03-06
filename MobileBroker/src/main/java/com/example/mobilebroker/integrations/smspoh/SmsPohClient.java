@@ -1,7 +1,7 @@
-package com.example.mobilebroker.client;
+package com.example.mobilebroker.integrations.smspoh;
 
-import com.example.mobilebroker.client.dtos.SmsPohRequest;
-import com.example.mobilebroker.client.dtos.SmsPohResponse;
+import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohRequest;
+import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,10 @@ public class SmsPohClient {
     @Value("${smspoh.auth.token}")
     private String authToken;
 
-    public SmsPohResponse sendSms(SmsPohRequest request) {
+    @Value("${smspoh.provider.name}")
+    private String providerName;
+
+    public ResponseEntity<SmsPohResponse> sendSms(SmsPohRequest request) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -26,10 +29,11 @@ public class SmsPohClient {
 
         HttpEntity<SmsPohRequest> entity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<SmsPohResponse> response =
-                restTemplate.exchange(apiUrl, HttpMethod.POST, entity, SmsPohResponse.class);
+        return restTemplate.exchange(apiUrl, HttpMethod.POST, entity, SmsPohResponse.class);
+    }
 
-        return response.getBody();
+    public String getProviderName() {
+        return providerName;
     }
 
 
