@@ -20,6 +20,13 @@ CREATE TABLE ndc (
     number_type VARCHAR(20) NOT NULL
 )
 
+CREATE TABLE api_key (
+	api_key_id SERIAL PRIMARY KEY,
+	api_key VARCHAR(100) NOT NULL,
+	client_name VARCHAR(50) NOT NULL,
+	active BOOLEAN NOT NULL DEFAULT TRUE
+)
+
 
 INSERT INTO operator (operator_id, operator_name, country_code)
 VALUES
@@ -117,3 +124,5 @@ FROM operator o
 JOIN operator_prefix op ON o.operator_id = op.operator_id
 JOIN ndc n ON op.ndc = n.ndc
 ORDER BY o.operator_name, op.ndc, op.prefix_start
+
+select * from api_key

@@ -8,4 +8,5 @@ import io.vavr.control.Either;
 public interface SmsService {
 
     Either<PhoneNumberInfoLookupError, SmsResult> sendSms(SmsRequest request);
+
 }

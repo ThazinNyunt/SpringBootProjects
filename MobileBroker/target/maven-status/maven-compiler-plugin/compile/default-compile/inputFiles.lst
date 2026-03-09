@@ -1,7 +1,5 @@
-C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\broker\dtos\SmsPohRequest.java
-C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\broker\dtos\SmsPohResponse.java
-C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\broker\SmsPohClient.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\cache\PrefixCache.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\controllers\api\ApiKeyController.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\controllers\api\dtos\PhoneNumberInfoResponse.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\controllers\api\dtos\SmsSendRequest.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\controllers\api\dtos\SmsSendResponse.java
@@ -9,12 +7,20 @@ C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobi
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\controllers\api\SmsController.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\data\Ndc.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\data\OperatorPrefix.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\entity\ApiKey.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\entity\Operator.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\exception\GlobalExceptionHandler.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\exception\PhoneNumberInfoLookupError.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\exception\ProblemDetails.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\integrations\smspoh\dtos\SmsPohRequest.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\integrations\smspoh\dtos\SmsPohResponse.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\integrations\smspoh\SmsPohClient.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\MobileBrokerApplication.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\repository\ApiKeyRepository.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\repository\OperatorRepository.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\security\ApiKeyFilter.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\ApiKeyService.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\ApiKeyServiceImpl.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\dtos\NdcInfo.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\dtos\PhoneNumberInfo.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\dtos\SmsRequest.java
@@ -23,4 +29,5 @@ C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobi
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\PhoneNumberInfoServiceImpl.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\SmsService.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\service\SmsServiceImpl.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\util\ApiKeyGenerator.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\example\mobilebroker\util\PhoneNumberNormalizer.java

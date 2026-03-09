@@ -4,14 +4,12 @@ public class SmsSendResponse {
 
     private String status;
     private String provider;
-    private int httpStatus;
     private String operator;
     private String createdAt;
 
-    public SmsSendResponse(String status, String provider, int httpStatus, String operator, String createdAt) {
+    public SmsSendResponse(String status, String provider, String operator, String createdAt) {
         this.status = status;
         this.provider = provider;
-        this.httpStatus = httpStatus;
         this.operator = operator;
         this.createdAt = createdAt;
     }
@@ -22,10 +20,6 @@ public class SmsSendResponse {
 
     public String getProvider() {
         return provider;
-    }
-
-    public int getHttpStatus() {
-        return httpStatus;
     }
 
     public String getOperator() {

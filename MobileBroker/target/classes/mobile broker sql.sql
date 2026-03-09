@@ -20,6 +20,13 @@ CREATE TABLE ndc (
     number_type VARCHAR(20) NOT NULL
 )
 
+CREATE TABLE api_key (
+	api_key_id SERIAL PRIMARY KEY,
+	api_key VARCHAR(100) NOT NULL,
+	client_name VARCHAR(50) NOT NULL,
+	active BOOLEAN NOT NULL DEFAULT TRUE
+)
+
 
 INSERT INTO operator (operator_id, operator_name, country_code)
 VALUES

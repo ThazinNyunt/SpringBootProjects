@@ -32,7 +32,6 @@ public class SmsController {
                 result -> new SmsSendResponse(
                         result.status(),
                         result.provider(),
-                        result.httpStatus(),
                         result.operator(),
                         result.createdAt()
                 )
