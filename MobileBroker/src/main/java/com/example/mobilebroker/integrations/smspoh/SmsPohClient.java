@@ -12,13 +12,13 @@ public class SmsPohClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${smspoh.api.url}")
+    @Value("${smspoh.api.baseUrl}")
     private String apiUrl;
 
-    @Value("${smspoh.auth.token}")
+    @Value("${smspoh.api.authToken}")
     private String authToken;
 
-    @Value("${smspoh.provider.name}")
+    @Value("${smspoh.api.name}")
     private String providerName;
 
     public ResponseEntity<SmsPohResponse> sendSms(SmsPohRequest request) {

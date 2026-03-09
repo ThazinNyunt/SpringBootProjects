@@ -11,13 +11,13 @@ import org.springframework.web.client.RestTemplate;
 public class InfoBipClient {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${smspoh.api.url}")
+    @Value("${infobip.api.baseUrl}")
     private String apiUrl;
 
-    @Value("${smspoh.auth.token}")
+    @Value("${infobip.api.authToken}")
     private String authToken;
 
-    @Value("${smspoh.provider.name}")
+    @Value("${infobip.api.name}")
     private String providerName;
 
     public ResponseEntity<SmsPohResponse> sendSms(SmsPohRequest request) {
