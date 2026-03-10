@@ -2,6 +2,7 @@ package com.example.mobilebroker.service;
 
 
 import com.example.mobilebroker.entity.OperatorProvider;
+import com.example.mobilebroker.entity.SenderName;
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
 import com.example.mobilebroker.integrations.infobip.InfoBipClient;
 import com.example.mobilebroker.integrations.infobip.dtos.InfoBipRequest;
@@ -10,15 +11,18 @@ import com.example.mobilebroker.integrations.smspoh.SmsPohClient;
 import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohRequest;
 import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohResponse;
 import com.example.mobilebroker.repository.OperatorProviderRepository;
+import com.example.mobilebroker.repository.SenderNameRepository;
 import com.example.mobilebroker.service.dtos.PhoneNumberInfo;
 import com.example.mobilebroker.service.dtos.SmsRequest;
 import com.example.mobilebroker.service.dtos.SmsResult;
 import io.vavr.control.Either;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -27,16 +31,22 @@ public class SmsServiceImpl implements SmsService {
     private final SmsPohClient smsPohClient;
     private final InfoBipClient infoBipClient;
     private final OperatorProviderRepository operatorProviderRepository;
+    private final HttpServletRequest httpServletRequest;
+    private final SenderNameRepository senderNameRepository;
 
-    public SmsServiceImpl(PhoneNumberInfoService phoneNumberInfoService, SmsPohClient smsPohClient, InfoBipClient infoBipClient, OperatorProviderRepository operatorProviderRepository) {
+    public SmsServiceImpl(PhoneNumberInfoService phoneNumberInfoService, SmsPohClient smsPohClient, InfoBipClient infoBipClient, OperatorProviderRepository operatorProviderRepository, HttpServletRequest httpServletRequest, SenderNameRepository senderNameRepository) {
         this.phoneNumberInfoService = phoneNumberInfoService;
         this.smsPohClient = smsPohClient;
         this.infoBipClient = infoBipClient;
         this.operatorProviderRepository = operatorProviderRepository;
+        this.httpServletRequest = httpServletRequest;
+        this.senderNameRepository = senderNameRepository;
     }
 
     @Override
     public Either<PhoneNumberInfoLookupError, SmsResult> sendSms(SmsRequest request) {
+
+        Long tenantId = (Long) httpServletRequest.getAttribute("tenantId");
 
         Either<PhoneNumberInfoLookupError, PhoneNumberInfo> result = phoneNumberInfoService.findOperator(request.phoneNumber());
 
@@ -50,14 +60,23 @@ public class SmsServiceImpl implements SmsService {
         List<OperatorProvider> providers = operatorProviderRepository.findByOperatorIdOrderByPriority(operator);
         for(OperatorProvider op : providers) {
             String providerId = op.getProvider().getProviderId();
+            Optional<SenderName> senderNameOptional = senderNameRepository.findByTenantAndProvider(tenantId, providerId);
+            System.out.println(tenantId + " " + providerId);
+            if(senderNameOptional.isEmpty()) {
+                continue;
+            }
+            String senderName = senderNameOptional.get().getSenderName();
+
+            System.out.println(senderName);
+
             if("SMSPOH".equals(providerId)) {
-                SmsResult smsResult = sendWithSMSPoh(request, operator);
+                SmsResult smsResult = sendWithSMSPoh(request, operator, senderName);
                 if(smsResult != null) {
                     return Either.right(smsResult);
                 }
             }
             if("INFOBIP".equals(providerId)) {
-                SmsResult smsResult = sendWithInfobip(request, operator);
+                SmsResult smsResult = sendWithInfobip(request, operator, senderName);
                 if(smsResult != null) {
                     return Either.right(smsResult);
                 }
@@ -75,12 +94,12 @@ public class SmsServiceImpl implements SmsService {
         );
     }
 
-    private SmsResult sendWithSMSPoh(SmsRequest request, String operator) {
+    private SmsResult sendWithSMSPoh(SmsRequest request, String operator, String senderName) {
 
         SmsPohRequest smsRequest = new SmsPohRequest(
                 request.phoneNumber(),
                 request.message(),
-                request.from()
+                senderName
         );
 
         ResponseEntity<SmsPohResponse> response = smsPohClient.sendSms(smsRequest);
@@ -107,12 +126,12 @@ public class SmsServiceImpl implements SmsService {
         );
     }
 
-    private SmsResult sendWithInfobip(SmsRequest request, String operator) {
+    private SmsResult sendWithInfobip(SmsRequest request, String operator, String senderName) {
 
         InfoBipRequest smsRequest = new InfoBipRequest(
                 request.phoneNumber(),
                 request.message(),
-                request.from()
+                senderName
         );
 
         ResponseEntity<InfoBipResponse> response = infoBipClient.sendSms(smsRequest);

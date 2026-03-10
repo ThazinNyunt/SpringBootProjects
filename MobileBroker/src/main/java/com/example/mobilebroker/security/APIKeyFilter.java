@@ -1,5 +1,6 @@
 package com.example.mobilebroker.security;
 
+import com.example.mobilebroker.entity.APIKey;
 import com.example.mobilebroker.repository.APIKeyRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class APIKeyFilter extends OncePerRequestFilter {
@@ -28,11 +30,21 @@ public class APIKeyFilter extends OncePerRequestFilter {
 
         String apiKey = request.getHeader("x-api-key");
 
-        if(apiKey == null || !apiKeyRepository.existsByApiKeyAndActiveTrue(apiKey)) {
+        if(apiKey == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Missing API Key!");
+            return;
+        }
+
+        Optional<APIKey> apiKeyOptional = apiKeyRepository.findByApiKeyAndActiveTrue(apiKey);
+        if(apiKeyOptional.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid API Key!");
             return;
         }
+
+        Long tenantId = apiKeyOptional.get().getTenant().getTenantId();
+        request.setAttribute("tenantId", tenantId);
 
         filterChain.doFilter(request, response);
     }

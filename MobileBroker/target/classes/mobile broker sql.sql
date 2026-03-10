@@ -164,4 +164,4 @@ JOIN operator_prefix op ON o.operator_id = op.operator_id
 JOIN ndc n ON op.ndc = n.ndc
 ORDER BY o.operator_name, op.ndc, op.prefix_start
 
-select * from api_key
+

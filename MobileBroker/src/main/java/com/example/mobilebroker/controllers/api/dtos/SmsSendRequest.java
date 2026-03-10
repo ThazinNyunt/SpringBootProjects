@@ -4,7 +4,6 @@ public class SmsSendRequest {
 
     private String to;
     private String message;
-    private String from;
 
     public SmsSendRequest() {
     }
@@ -17,10 +16,6 @@ public class SmsSendRequest {
         return message;
     }
 
-    public String getFrom() {
-        return from;
-    }
-
     public void setTo(String to) {
         this.to = to;
     }
@@ -29,7 +24,4 @@ public class SmsSendRequest {
         this.message = message;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
 }

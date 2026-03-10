@@ -26,7 +26,7 @@ public class SmsController {
     @PostMapping("/send")
     public Either<ProblemDetails, SmsSendResponse> sendSms(@RequestBody SmsSendRequest request) {
         return smsService.sendSms(
-                new SmsRequest(request.getTo(), request.getMessage(), request.getFrom() )
+                new SmsRequest(request.getTo(), request.getMessage())
         ).bimap(
                 this::mapToApiError,
                 result -> new SmsSendResponse(

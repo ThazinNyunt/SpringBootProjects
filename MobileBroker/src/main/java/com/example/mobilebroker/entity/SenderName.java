@@ -19,7 +19,7 @@ public class SenderName {
 
     @ManyToOne
     @MapsId("tenantId")
-    @JoinColumn(name = "tenent_id")
+    @JoinColumn(name = "tenant_id")
     private Tenant tenant;
 
     @ManyToOne
