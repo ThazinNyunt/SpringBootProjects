@@ -22,15 +22,15 @@ CREATE TABLE ndc (
 
 CREATE TABLE tenant (
 	tenant_id SERIAL PRIMARY KEY,
-	tenant_name VARCHAR(50) NOT NULL,
+	tenant_name VARCHAR(50) NOT NULL
 )
 
 CREATE TABLE api_key (
 	api_key_id SERIAL PRIMARY KEY,
 	api_key VARCHAR(100) NOT NULL,
 	tenant_id INT NOT NULL,
-	active BOOLEAN NOT NULL DEFAULT TRUE
-	CONSTRAINT fk_tenant_api_key FOREIGN KEY (tenant_id) REFERENCE tenant(tenant_id)
+	active BOOLEAN NOT NULL DEFAULT TRUE,
+	CONSTRAINT fk_tenant_api_key FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id)
 )
 
 CREATE TABLE provider (
@@ -42,12 +42,19 @@ CREATE TABLE tenant_provider_sender_name (
 	tenant_id INT NOT NULL,
 	provider_id VARCHAR(20) NOT NULL,
 	sender_name VARCHAR(50) NOT NULL,
-	priority INT NOT NULL,
 	PRIMARY KEY (tenant_id, provider_id),
 	CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
 	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
 )
 
+CREATE TABLE operator_provider (
+    operator_id VARCHAR(10) NOT NULL,
+    provider_id VARCHAR(20) NOT NULL,
+    priority INT NOT NULL,
+	PRIMARY KEY (operator_id, provider_id),
+    CONSTRAINT fk_operator FOREIGN KEY (operator_id) REFERENCES operator(operator_id),
+    CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
+)
 
 INSERT INTO operator (operator_id, operator_name, country_code)
 VALUES
@@ -67,15 +74,16 @@ VALUES
 	('INFOBIP','Infobip'),
 	('SMSPOH', 'SMSPoh');
 
-INSERT INTO tenant_provider_sender_name (tenant_id, provider_id, sender_name, priority)
+INSERT INTO tenant_provider_sender_name (tenant_id, provider_id, sender_name)
 VALUES 
-	(1, 'INFOBIP', 'MMBusTicket', 0),
-	(1, 'SMSPOH', 'MMBus', 1);
+	(1, 'INFOBIP', 'MMBusTicket'),
+	(1, 'SMSPOH', 'MMBus');
 
-
-
-
-
+INSERT INTO operator_provider (operator_id, provider_id, priority) 
+VALUES 
+	('MPT', 'SMSPOH', 0),
+	('U9', 'INFOBIP', 0),
+	('U9', 'SMSPOH', 1)
 
 
 

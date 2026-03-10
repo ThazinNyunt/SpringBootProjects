@@ -2,18 +2,18 @@ package com.example.mobilebroker.controllers.api.dtos;
 
 public class APIKeyResponse {
 
-    private String clientName;
+    private String tenantName;
     private String apiKey;
     private boolean active;
 
-    public APIKeyResponse(String clientName, String apiKey, boolean active) {
-        this.clientName = clientName;
+    public APIKeyResponse(String tenantName, String apiKey, boolean active) {
+        this.tenantName = tenantName;
         this.apiKey = apiKey;
         this.active = active;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getTenantName() {
+        return tenantName;
     }
 
     public String getApiKey() {

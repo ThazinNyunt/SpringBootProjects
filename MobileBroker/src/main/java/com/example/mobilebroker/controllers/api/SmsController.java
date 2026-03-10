@@ -31,8 +31,6 @@ public class SmsController {
                 this::mapToApiError,
                 result -> new SmsSendResponse(
                         result.status(),
-                        result.provider(),
-                        result.operator(),
                         result.createdAt()
                 )
         );

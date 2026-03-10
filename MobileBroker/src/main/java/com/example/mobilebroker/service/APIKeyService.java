@@ -4,14 +4,14 @@ import com.example.mobilebroker.controllers.api.dtos.APIKeyResponse;
 
 public interface APIKeyService {
 
-    APIKeyResponse createApiKey(String clientName);
+    APIKeyResponse createApiKey(String tenantName);
 
-    APIKeyResponse getByClientName(String clientName);
+    APIKeyResponse getAPIKeyByTenantName(String tenantName);
 
-    APIKeyResponse updateApiKey(String clientName, String newClientName);
+    APIKeyResponse updateApiKeyAndTenantName(String name, String newName);
 
-    APIKeyResponse updateStatus(String clientName, boolean active);
+    APIKeyResponse updateAPIKeyStatus(String tenantName, boolean active);
 
-    void deleteApiKey(String clientName);
+    void deleteApiKeyAndTenant(String tenantName);
 
 }

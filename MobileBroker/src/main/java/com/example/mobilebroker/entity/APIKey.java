@@ -20,8 +20,9 @@ public class APIKey {
     @Column(name = "api_key", nullable = false)
     private String apiKey;
 
-    @Column(name = "client_name", nullable = false)
-    private String clientName;
+    @ManyToOne
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private Tenant tenant;
 
     @Column(name = "active", nullable = false)
     private Boolean active;

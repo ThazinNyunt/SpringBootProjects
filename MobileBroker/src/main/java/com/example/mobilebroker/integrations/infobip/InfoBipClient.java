@@ -1,5 +1,7 @@
 package com.example.mobilebroker.integrations.infobip;
 
+import com.example.mobilebroker.integrations.infobip.dtos.InfoBipRequest;
+import com.example.mobilebroker.integrations.infobip.dtos.InfoBipResponse;
 import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohRequest;
 import com.example.mobilebroker.integrations.smspoh.dtos.SmsPohResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,26 +11,28 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class InfoBipClient {
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${infobip.api.baseUrl}")
     private String apiUrl;
 
-    @Value("${infobip.api.authToken}")
-    private String authToken;
+    @Value("${infobip.api.encodedAuth}")
+    private String encodedAuth;
 
     @Value("${infobip.api.name}")
     private String providerName;
 
-    public ResponseEntity<SmsPohResponse> sendSms(SmsPohRequest request) {
+    public ResponseEntity<InfoBipResponse> sendSms(InfoBipRequest request) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(authToken);
 
-        HttpEntity<SmsPohRequest> entity = new HttpEntity<>(request, headers);
+        headers.set("Authorization", "Basic " + encodedAuth);
 
-        return restTemplate.exchange(apiUrl, HttpMethod.POST, entity, SmsPohResponse.class);
+        HttpEntity<InfoBipRequest> entity = new HttpEntity<>(request, headers);
+
+        return restTemplate.exchange(apiUrl, HttpMethod.POST, entity, InfoBipResponse.class);
     }
 
     public String getProviderName() {

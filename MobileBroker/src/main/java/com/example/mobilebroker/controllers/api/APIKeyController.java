@@ -1,8 +1,7 @@
 package com.example.mobilebroker.controllers.api;
 
-import com.example.mobilebroker.controllers.api.dtos.APIKeyClientUpdateRequest;
+import com.example.mobilebroker.controllers.api.dtos.APIKeyTenantRequest;
 import com.example.mobilebroker.controllers.api.dtos.APIKeyResponse;
-import com.example.mobilebroker.controllers.api.dtos.APIKeyStatusUpdateRequest;
 import com.example.mobilebroker.service.APIKeyService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +16,28 @@ public class APIKeyController {
     }
 
     @PostMapping("/generate")
-    public APIKeyResponse generateApiKey(@RequestParam String client) {
-        return apiKeyService.createApiKey(client);
+    public APIKeyResponse generateApiKey(@RequestParam String name) {
+        return apiKeyService.createApiKey(name);
     }
 
     @GetMapping
-    public APIKeyResponse getApiKey(@RequestParam String client) {
-        return apiKeyService.getByClientName(client);
+    public APIKeyResponse getApiKey(@RequestParam String name) {
+        return apiKeyService.getAPIKeyByTenantName(name);
     }
 
     @PutMapping("/update")
-    public APIKeyResponse updateApiKey(@RequestBody APIKeyClientUpdateRequest request) {
-        return apiKeyService.updateApiKey(request.getClientName(), request.getNewClientName());
+    public APIKeyResponse updateApiKey(@RequestBody APIKeyTenantRequest request) {
+        return apiKeyService.updateApiKeyAndTenantName(request.getName(), request.getNewName());
     }
 
-    @PatchMapping("/status")
-    public APIKeyResponse updateStatus(@RequestBody APIKeyStatusUpdateRequest request) {
-        return apiKeyService.updateStatus(request.getClientName(), request.getActive());
+    @PatchMapping("/{name}/status={active}")
+    public APIKeyResponse updateStatus(@PathVariable String name, @PathVariable boolean active) {
+        return apiKeyService.updateAPIKeyStatus(name, active);
     }
 
     @DeleteMapping
-    public String deleteApiKey(@RequestParam String client) {
-        apiKeyService.deleteApiKey(client);
+    public String deleteApiKey(@RequestParam String name) {
+        apiKeyService.deleteApiKeyAndTenant(name);
         return "API key deleted successfully";
     }
 
