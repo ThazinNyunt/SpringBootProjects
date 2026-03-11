@@ -1,7 +1,6 @@
 package com.example.mobilebroker.exception;
 
 import io.vavr.control.Either;
-import org.apache.coyote.Response;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
@@ -30,15 +29,32 @@ public class GlobalExceptionHandler implements ResponseBodyAdvice<Object> {
         return body;
     }
 
-    @ExceptionHandler(APIKeyError.class)
-    public ResponseEntity<ProblemDetails> handleApiKeyError(APIKeyError ex) {
+    @ExceptionHandler(APIKeyException.class)
+    public ResponseEntity<ProblemDetails> handleApiKeyError(APIKeyException ex) {
         ProblemDetails problem = ProblemDetails.builder()
-                .type("https://example.com/problems/api-key-error")
-                .title("API Key Error")
+                .type("https://example.com/problems/api-error")
+                .title(ex.getMessage())
                 .status(HttpStatus.BAD_REQUEST.value())
+                .detail(ex.getDetail())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(problem);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetails> handleInternalError(Exception ex) {
+        ProblemDetails problem = ProblemDetails.builder()
+                .type("https://example.com/problems/internal-error")
+                .title("Internal Server Error")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .detail(ex.getMessage())
                 .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(problem);
     }
 
 }

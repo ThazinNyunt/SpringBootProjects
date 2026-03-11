@@ -3,8 +3,8 @@ package com.example.mobilebroker.service;
 import com.example.mobilebroker.controllers.api.dtos.APIKeyResponse;
 import com.example.mobilebroker.entity.APIKey;
 import com.example.mobilebroker.entity.Tenant;
-import com.example.mobilebroker.exception.TenantAlreadyExistsError;
-import com.example.mobilebroker.exception.TentantNotFoundError;
+import com.example.mobilebroker.exception.TenantAlreadyExistsException;
+import com.example.mobilebroker.exception.TentantNotFoundException;
 import com.example.mobilebroker.repository.APIKeyRepository;
 import com.example.mobilebroker.repository.TenantRepository;
 import com.example.mobilebroker.util.ApiKeyGenerator;
@@ -34,7 +34,7 @@ public class APIKeyServiceImpl implements APIKeyService {
                 });
 
         if(apiKeyRepository.existsByTenant(tenant)) {
-            throw new TenantAlreadyExistsError(tenantName);
+            throw new TenantAlreadyExistsException(tenantName);
         }
 
         String key = ApiKeyGenerator.generate();
@@ -53,10 +53,10 @@ public class APIKeyServiceImpl implements APIKeyService {
     public APIKeyResponse getAPIKeyByTenantName(String tenantName) {
 
         Tenant tenant = tenantRepository.findByTenantName(tenantName)
-                .orElseThrow(()-> new TentantNotFoundError(tenantName));
+                .orElseThrow(()-> new TentantNotFoundException(tenantName));
 
         APIKey apiKey = apiKeyRepository.findByTenant(tenant)
-                .orElseThrow(() -> new TentantNotFoundError(tenantName));
+                .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
         return new APIKeyResponse(tenant.getTenantName(), apiKey.getApiKey(), apiKey.getActive());
     }
@@ -64,10 +64,10 @@ public class APIKeyServiceImpl implements APIKeyService {
     @Override
     public APIKeyResponse updateApiKeyAndTenantName(String tenantName, String newName) {
         Tenant tenant = tenantRepository.findByTenantName(tenantName)
-                .orElseThrow(() -> new TentantNotFoundError(tenantName));
+                .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
         APIKey apiKey = apiKeyRepository.findByTenant(tenant)
-                .orElseThrow(() -> new TentantNotFoundError(tenantName));
+                .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
         tenant.setTenantName(newName);
         tenantRepository.save(tenant);
@@ -82,10 +82,10 @@ public class APIKeyServiceImpl implements APIKeyService {
     @Override
     public APIKeyResponse updateAPIKeyStatus(String tenantName, boolean active) {
         Tenant tenant = tenantRepository.findByTenantName(tenantName)
-                .orElseThrow(() -> new TentantNotFoundError(tenantName));
+                .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
         APIKey apiKey = apiKeyRepository.findByTenant(tenant)
-                .orElseThrow(() -> new TentantNotFoundError(tenantName));
+                .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
         apiKey.setActive(active);
         apiKeyRepository.save(apiKey);
@@ -96,10 +96,10 @@ public class APIKeyServiceImpl implements APIKeyService {
     @Override
     public void deleteApiKeyAndTenant(String tenantName) {
        Tenant tenant = tenantRepository.findByTenantName(tenantName)
-               .orElseThrow(() -> new TentantNotFoundError(tenantName));
+               .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
        APIKey apiKey = apiKeyRepository.findByTenant(tenant)
-               .orElseThrow(() -> new TentantNotFoundError(tenantName));
+               .orElseThrow(() -> new TentantNotFoundException(tenantName));
 
        apiKeyRepository.delete(apiKey);
        tenantRepository.delete(tenant);

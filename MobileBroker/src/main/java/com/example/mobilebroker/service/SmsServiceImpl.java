@@ -1,6 +1,5 @@
 package com.example.mobilebroker.service;
 
-
 import com.example.mobilebroker.entity.OperatorProvider;
 import com.example.mobilebroker.entity.SenderName;
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
@@ -19,6 +18,7 @@ import io.vavr.control.Either;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,16 +58,29 @@ public class SmsServiceImpl implements SmsService {
         String operator = info.operator();
 
         List<OperatorProvider> providers = operatorProviderRepository.findByOperatorIdOrderByPriority(operator);
+        if(providers.isEmpty()) {
+            return Either.right(
+                    new SmsResult(
+                            null,
+                            "FAILED_NO_PROVIDER",
+                            null,
+                            404,
+                            operator,
+                            LocalDateTime.now().toString()
+                    )
+            );
+        }
+
+        boolean senderNameFound = false;
+
         for(OperatorProvider op : providers) {
             String providerId = op.getProvider().getProviderId();
             Optional<SenderName> senderNameOptional = senderNameRepository.findByTenantAndProvider(tenantId, providerId);
-            System.out.println(tenantId + " " + providerId);
             if(senderNameOptional.isEmpty()) {
                 continue;
             }
+            senderNameFound = true;
             String senderName = senderNameOptional.get().getSenderName();
-
-            System.out.println(senderName);
 
             if("SMSPOH".equals(providerId)) {
                 SmsResult smsResult = sendWithSMSPoh(request, operator, senderName);
@@ -82,11 +95,26 @@ public class SmsServiceImpl implements SmsService {
                 }
             }
         }
+
+        if(!senderNameFound) {
+            return Either.right(
+                    new SmsResult(
+                            null,
+                            "FAILED_SENDERNAME_NOT_CONFIGURED",
+                            null,
+                            400,
+                            operator,
+                            LocalDateTime.now().toString()
+                    )
+            );
+        }
+
+
         return Either.right(
                 new SmsResult(
                         null,
-                        "Failed",
-                        "No Provider Available",
+                        "FAILED_PROVIDER_ERROR",
+                        null,
                         500,
                         operator,
                         LocalDateTime.now().toString()
@@ -96,67 +124,77 @@ public class SmsServiceImpl implements SmsService {
 
     private SmsResult sendWithSMSPoh(SmsRequest request, String operator, String senderName) {
 
-        SmsPohRequest smsRequest = new SmsPohRequest(
-                request.phoneNumber(),
-                request.message(),
-                senderName
-        );
+        try {
+            SmsPohRequest smsRequest = new SmsPohRequest(
+                    request.phoneNumber(),
+                    request.message(),
+                    senderName
+            );
 
-        ResponseEntity<SmsPohResponse> response = smsPohClient.sendSms(smsRequest);
-        if(!response.getStatusCode().is2xxSuccessful()){
+            ResponseEntity<SmsPohResponse> response = smsPohClient.sendSms(smsRequest);
+            if(!response.getStatusCode().is2xxSuccessful()){
+                return null;
+            }
+
+            SmsPohResponse body = response.getBody();
+            if(body == null || body.getMessages().isEmpty()) {
+                return null;
+            }
+
+            SmsPohResponse.Message message = body.getMessages().get(0);
+            if(!"Accepted".equalsIgnoreCase(message.getStatus())) {
+                return null;
+            }
+            return new SmsResult(
+                    message.getMessageId(),
+                    "SUCCESS",
+                    smsPohClient.getProviderName(),
+                    response.getStatusCode().value(),
+                    operator,
+                    message.getCreatedAt()
+            );
+        } catch (RestClientException ex) {
+            System.out.println("SMSPOH provider error: " + ex.getMessage());
             return null;
         }
-
-        SmsPohResponse body = response.getBody();
-        if(body == null || body.getMessages().isEmpty()) {
-            return null;
-        }
-
-        SmsPohResponse.Message message = body.getMessages().get(0);
-        if(!"Accepted".equalsIgnoreCase(message.getStatus())) {
-            return null;
-        }
-        return new SmsResult(
-                message.getMessageId(),
-                message.getStatus(),
-                smsPohClient.getProviderName(),
-                response.getStatusCode().value(),
-                operator,
-                message.getCreatedAt()
-        );
     }
 
     private SmsResult sendWithInfobip(SmsRequest request, String operator, String senderName) {
 
-        InfoBipRequest smsRequest = new InfoBipRequest(
-                request.phoneNumber(),
-                request.message(),
-                senderName
-        );
+        try {
+            InfoBipRequest smsRequest = new InfoBipRequest(
+                    request.phoneNumber(),
+                    request.message(),
+                    senderName
+            );
 
-        ResponseEntity<InfoBipResponse> response = infoBipClient.sendSms(smsRequest);
-        if(!response.getStatusCode().is2xxSuccessful()) {
+            ResponseEntity<InfoBipResponse> response = infoBipClient.sendSms(smsRequest);
+            if(!response.getStatusCode().is2xxSuccessful()) {
+                return null;
+            }
+
+            InfoBipResponse body = response.getBody();
+            if(body == null || body.getMessages().isEmpty()) {
+                return null;
+            }
+
+            InfoBipResponse.Message message = body.getMessages().get(0);
+            if(!"PENDING_ACCEPTED".equalsIgnoreCase(message.getStatus().getName())) {
+                return null;
+            }
+
+            return new SmsResult(
+                    message.getMessageId(),
+                    "SUCCESS",
+                    infoBipClient.getProviderName(),
+                    response.getStatusCode().value(),
+                    operator,
+                    LocalDateTime.now().toString()
+            );
+        } catch (RestClientException ex) {
+            System.out.println("INFOBIP provider error: " + ex.getMessage());
             return null;
         }
-
-        InfoBipResponse body = response.getBody();
-        if(body == null || body.getMessages().isEmpty()) {
-            return null;
-        }
-
-        InfoBipResponse.Message message = body.getMessages().get(0);
-        if(!"PENDING_ACCEPTED".equalsIgnoreCase(message.getStatus().getName())) {
-            return null;
-        }
-
-        return new SmsResult(
-                message.getMessageId(),
-                message.getStatus().getName(),
-                infoBipClient.getProviderName(),
-                response.getStatusCode().value(),
-                operator,
-                LocalDateTime.now().toString()
-        );
 
     }
 }

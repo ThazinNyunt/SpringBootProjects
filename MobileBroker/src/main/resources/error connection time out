@@ -109,8 +109,6 @@ INFOBip
 
 getaddrinfo EAI_AGAIN jl61n.api.infobip.com
 
-401 Unauthorized
-POST
-https://jl61n.api.infobip.com/sms/2/text/single
+401 Unauthorized POST https://jl61n.api.infobip.com/sms/2/text/single
 404 Not Found POST https://jl61n.api.infobip.com
 EAI_AGAIN POST https://jl61n.api.infobip.com/sms/2/text/single
