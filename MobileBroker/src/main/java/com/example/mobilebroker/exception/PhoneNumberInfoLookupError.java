@@ -1,6 +1,6 @@
 package com.example.mobilebroker.exception;
 
-public sealed interface PhoneNumberInfoLookupError permits
+public sealed interface PhoneNumberInfoLookupError extends SmsError permits
         PhoneNumberInfoLookupError.InvalidPhoneNumber,
         PhoneNumberInfoLookupError.NdcNotFound,
         PhoneNumberInfoLookupError.OperatorNotFound {

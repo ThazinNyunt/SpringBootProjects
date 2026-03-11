@@ -10,7 +10,7 @@ public interface APIKeyRepository extends JpaRepository<APIKey, Long> {
 
     boolean existsByApiKeyAndActiveTrue(String apiKey);
 
-    boolean existsByTenant(Tenant tenantName);
+    boolean existsByTenant(Tenant tenant);
 
     Optional<APIKey> findByTenant(Tenant tenant);
 

@@ -1,17 +1,19 @@
 package com.example.mobilebroker.service;
 
-import com.example.mobilebroker.controllers.api.dtos.APIKeyResponse;
+import com.example.mobilebroker.exception.APIKeyError;
+import com.example.mobilebroker.service.dtos.APIKeyInfo;
+import io.vavr.control.Either;
 
 public interface APIKeyService {
 
-    APIKeyResponse createApiKey(String tenantName);
+    Either<APIKeyError, APIKeyInfo> createApiKey(String tenantName);
 
-    APIKeyResponse getAPIKeyByTenantName(String tenantName);
+    Either<APIKeyError, APIKeyInfo> getAPIKeyByTenantName(String tenantName);
 
-    APIKeyResponse updateApiKeyAndTenantName(String name, String newName);
+    Either<APIKeyError, APIKeyInfo> updateApiKeyAndTenantName(String name, String newName);
 
-    APIKeyResponse updateAPIKeyStatus(String tenantName, boolean active);
+    Either<APIKeyError, APIKeyInfo> updateAPIKeyStatus(String tenantName, boolean active);
 
-    void deleteApiKeyAndTenant(String tenantName);
+    Either<APIKeyError, Void> deleteApiKeyAndTenant(String tenantName);
 
 }

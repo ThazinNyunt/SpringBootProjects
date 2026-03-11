@@ -3,6 +3,8 @@ package com.example.mobilebroker.service;
 import com.example.mobilebroker.entity.OperatorProvider;
 import com.example.mobilebroker.entity.SenderName;
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
+import com.example.mobilebroker.exception.SmsError;
+import com.example.mobilebroker.exception.SmsSendError;
 import com.example.mobilebroker.integrations.infobip.InfoBipClient;
 import com.example.mobilebroker.integrations.infobip.dtos.InfoBipRequest;
 import com.example.mobilebroker.integrations.infobip.dtos.InfoBipResponse;
@@ -44,7 +46,7 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
-    public Either<PhoneNumberInfoLookupError, SmsResult> sendSms(SmsRequest request) {
+    public Either<SmsError, SmsResult> sendSms(SmsRequest request) {
 
         Long tenantId = (Long) httpServletRequest.getAttribute("tenantId");
 
@@ -59,16 +61,7 @@ public class SmsServiceImpl implements SmsService {
 
         List<OperatorProvider> providers = operatorProviderRepository.findByOperatorIdOrderByPriority(operator);
         if(providers.isEmpty()) {
-            return Either.right(
-                    new SmsResult(
-                            null,
-                            "FAILED_NO_PROVIDER",
-                            null,
-                            404,
-                            operator,
-                            LocalDateTime.now().toString()
-                    )
-            );
+            return Either.left(new SmsSendError.FailedNoProvider(operator));
         }
 
         boolean senderNameFound = false;
@@ -97,29 +90,11 @@ public class SmsServiceImpl implements SmsService {
         }
 
         if(!senderNameFound) {
-            return Either.right(
-                    new SmsResult(
-                            null,
-                            "FAILED_SENDERNAME_NOT_CONFIGURED",
-                            null,
-                            400,
-                            operator,
-                            LocalDateTime.now().toString()
-                    )
-            );
+            return Either.left(new SmsSendError.FailedSenderNameNotConfigured(tenantId));
         }
 
 
-        return Either.right(
-                new SmsResult(
-                        null,
-                        "FAILED_PROVIDER_ERROR",
-                        null,
-                        500,
-                        operator,
-                        LocalDateTime.now().toString()
-                )
-        );
+        return Either.left(new SmsSendError.FailedProviderError(operator));
     }
 
     private SmsResult sendWithSMSPoh(SmsRequest request, String operator, String senderName) {

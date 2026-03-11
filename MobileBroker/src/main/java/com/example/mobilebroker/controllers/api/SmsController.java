@@ -4,6 +4,8 @@ import com.example.mobilebroker.controllers.api.dtos.SmsSendRequest;
 import com.example.mobilebroker.controllers.api.dtos.SmsSendResponse;
 import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
 import com.example.mobilebroker.exception.ProblemDetails;
+import com.example.mobilebroker.exception.SmsError;
+import com.example.mobilebroker.exception.SmsSendError;
 import com.example.mobilebroker.service.SmsService;
 import com.example.mobilebroker.service.dtos.SmsRequest;
 import io.vavr.control.Either;
@@ -36,12 +38,32 @@ public class SmsController {
         );
     }
 
-    private ProblemDetails mapToApiError(PhoneNumberInfoLookupError error) {
+    private ProblemDetails mapToApiError(SmsError error) {
+
+        if (error instanceof PhoneNumberInfoLookupError phoneError) {
+
+            return ProblemDetails.builder()
+                    .type("https://example.com/problems/phone-error")
+                    .title("PHONE_NUMBER_ERROR")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .detail(phoneError.toString())
+                    .build();
+        }
+
+        if (error instanceof SmsSendError smsError) {
+
+            return ProblemDetails.builder()
+                    .type("https://example.com/problems/sms-error")
+                    .title("SMS_SEND_FAILED")
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .detail(smsError.toString())
+                    .build();
+        }
+
         return ProblemDetails.builder()
-                .type("https://example.com/problems/sms-error")
-                .title("SMS Error")
-                .status(HttpStatus.BAD_REQUEST.value())
-                .detail(error.toString())
+                .type("https://example.com/problems/unknown")
+                .title("UNKNOWN_ERROR")
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build();
     }
 }

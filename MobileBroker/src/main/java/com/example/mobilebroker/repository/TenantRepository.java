@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface TenantRepository extends JpaRepository<Tenant, Long> {
 
     Optional<Tenant> findByTenantName(String tenantName);
+
+    boolean existsByTenantName(String tenantName);
 }
