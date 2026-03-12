@@ -39,22 +39,21 @@ CREATE TABLE provider (
 )
 
 CREATE TABLE sms_routing (
-	sms_routing_id SERIAL PRIMARY KEY,
 	tenant_id INT NOT NULL,
 	operator_id VARCHAR(10) NOT NULL,
 	provider_id VARCHAR(30) NOT NULL,
 	priority INT NOT NULL,
+	PRIMARY KEY (tenant_id, operator_id, provider_id),
 	CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
 	CONSTRAINT fk_operator FOREIGN KEY (operator_id) REFERENCES operator(operator_id),
-	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id),
-	CONSTRAINT uq_sms_routing UNIQUE (tenant_id, provider_id, priority)
+	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
 )
 
 CREATE TABLE sms_sender (
-	sms_sender_id SERIAL PRIMARY KEY,
 	tenant_id INT NOT NULL,
 	provider_id VARCHAR(30) NOT NULL,
 	sender_name VARCHAR(30) NOT NULL,
+	PRIMARY KEY (tenant_id, provider_id),
 	CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
 	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id),
 	CONSTRAINT uq_sms_sender UNIQUE (tenant_id, provider_id)
@@ -80,19 +79,19 @@ VALUES
 
 INSERT INTO sms_routing (tenant_id, operator_id, provider_id, priority)
 VALUES
-	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), MPT, SMSPOH, 1),
-	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), MPT, INFOBIP, 0),
-	((SELECT tenant_id FROM tenant WHERE tenant_name = 'ShweBooking'), U9, SMSPOH, 0),
-	((SELECT tenant_id FROM tenant WHERE tenant_name = 'ShweBooking'), U9, INFOBIP, 1)
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'MPT', 'SMSPOH', 1),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'MPT', 'INFOBIP', 2),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'U9', 'INFOBIP', 1),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'U9', 'SMSPOH', 2),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'ShweBooking'), 'MPT', 'INFOBIP', 1),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'ShweBooking'), 'U9', 'INFOBIP', 1)
 	
-drop table sms_routing 
-
-
-
-INSERT INTO sms_sender (sms_sender_id, tenant_id, provider_id, sender_name)
+INSERT INTO sms_sender (tenant_id, provider_id, sender_name)
 VALUES
-    (1, 1, 'SMSPOH', 'MMBus'),
-    (2, 1, 'INFOBIP', 'MMBus');
+    ((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'SMSPOH', 'MMBUS'),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'INFOBIP', 'MMBUSTICKET')
+
+
 
 	
 -- OLD DESIGN
@@ -202,5 +201,14 @@ FROM operator o
 JOIN operator_prefix op ON o.operator_id = op.operator_id
 JOIN ndc n ON op.ndc = n.ndc
 ORDER BY o.operator_name, op.ndc, op.prefix_start
+
+SELECT *
+FROM sms_routing
+WHERE tenant_id = 9
+AND operator_id = 'U9'
+ORDER BY priority ASC
+
+ALTER TABLE tenant
+RENAME COLUMN teanant TO name;
 
 

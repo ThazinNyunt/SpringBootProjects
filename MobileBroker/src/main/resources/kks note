@@ -1,3 +1,18 @@
+
+12 March 2026
+package com.innoveller.smsbroker.data;
+
+// innoveller
+
+// Increase cohesion
+// Reduce dependeny
+// ~ reduce coupling
+// Maintain invariant, eg. name is never null
+public class Dummy {
+    public String name;
+}
+
+
 package com.example.mobilebroker.service.dtos;
 
 import org.jspecify.annotations.Nullable;
@@ -28,11 +43,11 @@ package com.example.mobilebroker.controller.api;
 
 import com.example.mobilebroker.controllers.dtos.ApiErrorResponse;
 import com.example.mobilebroker.controller.dtos.PhoneNumberInfoResponse;
-import com.example.mobilebroker.exception.PhoneNumberInfoLookupError;
-import com.example.mobilebroker.exception.ProblemDetails;
-import com.example.mobilebroker.service.PhoneNumberInfoService;
+import exception.com.innoveller.smsbroker.PhoneNumberInfoLookupError;
+import exception.com.innoveller.smsbroker.ProblemDetails;
+import service.com.innoveller.smsbroker.PhoneNumberInfoService;
 import com.example.mobilebroker.service.dtos.GeographicInfo;
-import com.example.mobilebroker.service.dtos.PhoneNumberInfo;
+import dtos.service.com.innoveller.smsbroker.PhoneNumberInfo;
 import io.vavr.control.Either;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

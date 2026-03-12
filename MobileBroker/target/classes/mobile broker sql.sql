@@ -38,22 +38,25 @@ CREATE TABLE provider (
 	provider_name VARCHAR(50) NOT NULL
 )
 
-CREATE TABLE tenant_provider_sender_name (
+CREATE TABLE sms_routing (
 	tenant_id INT NOT NULL,
-	provider_id VARCHAR(20) NOT NULL,
-	sender_name VARCHAR(50) NOT NULL,
-	PRIMARY KEY (tenant_id, provider_id),
+	operator_id VARCHAR(10) NOT NULL,
+	provider_id VARCHAR(30) NOT NULL,
+	priority INT NOT NULL,
+	PRIMARY KEY (tenant_id, operator_id, provider_id),
 	CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
+	CONSTRAINT fk_operator FOREIGN KEY (operator_id) REFERENCES operator(operator_id),
 	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
 )
 
-CREATE TABLE operator_provider (
-    operator_id VARCHAR(10) NOT NULL,
-    provider_id VARCHAR(20) NOT NULL,
-    priority INT NOT NULL,
-	PRIMARY KEY (operator_id, provider_id),
-    CONSTRAINT fk_operator FOREIGN KEY (operator_id) REFERENCES operator(operator_id),
-    CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
+CREATE TABLE sms_sender (
+	tenant_id INT NOT NULL,
+	provider_id VARCHAR(30) NOT NULL,
+	sender_name VARCHAR(30) NOT NULL,
+	PRIMARY KEY (tenant_id, provider_id),
+	CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
+	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id),
+	CONSTRAINT uq_sms_sender UNIQUE (tenant_id, provider_id)
 )
 
 INSERT INTO operator (operator_id, operator_name, country_code)
@@ -74,19 +77,21 @@ VALUES
 	('INFOBIP','Infobip'),
 	('SMSPOH', 'SMSPoh');
 
-INSERT INTO tenant_provider_sender_name (tenant_id, provider_id, sender_name)
-VALUES 
-	(1, 'INFOBIP', 'MMBusTicket'),
-	(1, 'SMSPOH', 'MMBus');
+INSERT INTO sms_routing (tenant_id, operator_id, provider_id, priority)
+VALUES
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'MPT', 'SMSPOH', 1),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'MPT', 'INFOBIP', 2),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'U9', 'INFOBIP', 1),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'U9', 'SMSPOH', 2),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'ShweBooking'), 'MPT', 'INFOBIP', 1),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'ShweBooking'), 'U9', 'INFOBIP', 1)
+	
+INSERT INTO sms_sender (tenant_id, provider_id, sender_name)
+VALUES
+    ((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'SMSPOH', 'MMBUS'),
+	((SELECT tenant_id FROM tenant WHERE tenant_name = 'MMBusTicket'), 'INFOBIP', 'MMBUSTICKET')
 
-INSERT INTO operator_provider (operator_id, provider_id, priority) 
-VALUES 
-	('MPT', 'SMSPOH', 0),
-	('U9', 'INFOBIP', 0),
-	('U9', 'SMSPOH', 1)
-
-
-
+	
 -- OLD DESIGN
 
 CREATE TABLE operator (
@@ -110,6 +115,26 @@ CREATE TABLE ndc (
 	area VARCHAR(50) NOT NULL,
 	number_type VARCHAR(20) NOT NULL
 )
+
+CREATE TABLE tenant_provider_sender_name (
+	tenant_id INT NOT NULL,
+	provider_id VARCHAR(20) NOT NULL,
+	sender_name VARCHAR(50) NOT NULL,
+	PRIMARY KEY (tenant_id, provider_id),
+	CONSTRAINT fk_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(tenant_id),
+	CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
+)
+
+CREATE TABLE operator_provider (
+	
+    operator_id VARCHAR(10) NOT NULL,
+    provider_id VARCHAR(20) NOT NULL,
+    priority INT NOT NULL,
+	PRIMARY KEY (operator_id, provider_id),
+    CONSTRAINT fk_operator FOREIGN KEY (operator_id) REFERENCES operator(operator_id),
+    CONSTRAINT fk_provider FOREIGN KEY (provider_id) REFERENCES provider(provider_id)
+)
+
 
 
 INSERT INTO operator (operator_name, country_code) 
@@ -148,6 +173,17 @@ VALUES 	(2, 'Mandalay', 'GEOGRAPHIC'),
 
 select * from ndc
 
+INSERT INTO tenant_provider_sender_name (tenant_id, provider_id, sender_name)
+VALUES 
+	(1, 'INFOBIP', 'MMBusTicket'),
+	(1, 'SMSPOH', 'MMBus');
+
+INSERT INTO operator_provider (operator_id, provider_id, priority) 
+VALUES 
+	('MPT', 'SMSPOH', 0),
+	('U9', 'INFOBIP', 0),
+	('U9', 'SMSPOH', 1)
+
 SELECT * FROM operator_prefix p
         WHERE p.ndc = 9
         AND 254 BETWEEN p.prefix_start AND p.prefix_end
@@ -164,4 +200,8 @@ JOIN operator_prefix op ON o.operator_id = op.operator_id
 JOIN ndc n ON op.ndc = n.ndc
 ORDER BY o.operator_name, op.ndc, op.prefix_start
 
-
+SELECT *
+FROM sms_routing
+WHERE tenant_id = 9
+AND operator_id = 'U9'
+ORDER BY priority ASC
