@@ -1,9 +1,9 @@
 package com.innoveller.smsbroker.services;
 
-import com.innoveller.smsbroker.cache.PrefixCache;
+import com.innoveller.smsbroker.services.cache.PrefixCache;
 import com.innoveller.smsbroker.exceptions.PhoneNumberInfoLookupError;
-import com.innoveller.smsbroker.data.Ndc;
-import com.innoveller.smsbroker.data.OperatorPrefix;
+import com.innoveller.smsbroker.services.data.Ndc;
+import com.innoveller.smsbroker.services.data.OperatorPrefix;
 import com.innoveller.smsbroker.entities.Operator;
 import com.innoveller.smsbroker.repositories.OperatorRepository;
 import com.innoveller.smsbroker.services.dtos.NdcInfo;

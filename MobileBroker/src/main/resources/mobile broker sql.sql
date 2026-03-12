@@ -1,6 +1,6 @@
 CREATE TABLE operator (
     operator_id VARCHAR(10) PRIMARY KEY,  
-    operator_name VARCHAR(150) NOT NULL,
+    name VARCHAR(150) NOT NULL,
     country_code INT NOT NULL
 )
 
@@ -22,7 +22,7 @@ CREATE TABLE ndc (
 
 CREATE TABLE tenant (
 	tenant_id SERIAL PRIMARY KEY,
-	tenant_name VARCHAR(50) NOT NULL
+	name VARCHAR(50) NOT NULL
 )
 
 CREATE TABLE api_key (
@@ -35,7 +35,7 @@ CREATE TABLE api_key (
 
 CREATE TABLE provider (
 	provider_id VARCHAR(20) PRIMARY KEY NOT NULL,
-	provider_name VARCHAR(50) NOT NULL
+	name VARCHAR(50) NOT NULL
 )
 
 CREATE TABLE sms_routing (
@@ -59,7 +59,7 @@ CREATE TABLE sms_sender (
 	CONSTRAINT uq_sms_sender UNIQUE (tenant_id, provider_id)
 )
 
-INSERT INTO operator (operator_id, operator_name, country_code)
+INSERT INTO operator (operator_id, name, country_code)
 VALUES
     ('MPT', 'Myanmar Post and Telecommunications', 95),
     ('MEC', 'Myanmar Economic Corporation', 95),
@@ -67,12 +67,12 @@ VALUES
     ('ATOM', 'ATOM Myanmar Limited', 95),
     ('U9', 'Ooredoo Myanmar Limited', 95);
 
-INSERT INTO tenant (tenant_name)
+INSERT INTO tenant (name)
 VALUES 
 	('MMBusTicket'),
 	('ShweBooking');
 
-INSERT INTO provider (provider_id, provider_name)
+INSERT INTO provider (provider_id, name)
 VALUES 
 	('INFOBIP','Infobip'),
 	('SMSPOH', 'SMSPoh');
