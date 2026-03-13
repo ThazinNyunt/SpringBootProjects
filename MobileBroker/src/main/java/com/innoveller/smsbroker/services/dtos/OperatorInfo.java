@@ -1,6 +1,6 @@
-package com.innoveller.smsbroker.services.data;
+package com.innoveller.smsbroker.services.dtos;
 
-public record OperatorPrefix (
+public record OperatorInfo(
         String operator,
         Integer ndc,
         Integer prefixStart,

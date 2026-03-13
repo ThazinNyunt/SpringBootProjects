@@ -2,11 +2,10 @@ package com.innoveller.smsbroker.services;
 
 import com.innoveller.smsbroker.services.cache.PrefixCache;
 import com.innoveller.smsbroker.exceptions.PhoneNumberInfoLookupError;
-import com.innoveller.smsbroker.services.data.PhonePrefix;
-import com.innoveller.smsbroker.services.data.OperatorPrefix;
+import com.innoveller.smsbroker.services.dtos.NdcInfo;
+import com.innoveller.smsbroker.services.dtos.OperatorInfo;
 import com.innoveller.smsbroker.entities.Operator;
 import com.innoveller.smsbroker.repositories.OperatorRepository;
-import com.innoveller.smsbroker.services.dtos.NdcInfo;
 import com.innoveller.smsbroker.services.dtos.PhoneNumberInfo;
 import com.innoveller.smsbroker.utils.PhoneNumberNormalizer;
 import io.vavr.control.Either;
@@ -34,25 +33,25 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
         }
         String nsn = nsnResult.get();
 
-        PhonePrefix matchedPhonePrefix = null;
-        for(PhonePrefix phonePrefix : prefixCache.getSortedNdcList()) {
-            if(nsn.startsWith(phonePrefix.ndc().toString())) {
-                matchedPhonePrefix = phonePrefix;
+        NdcInfo matchedNdcInfo = null;
+        for(NdcInfo NdcInfo : prefixCache.getSortedNdcList()) {
+            if(nsn.startsWith(NdcInfo.ndc().toString())) {
+                matchedNdcInfo = NdcInfo;
                 break;
             }
         }
-        if(matchedPhonePrefix == null) {
+        if(matchedNdcInfo == null) {
             return Either.left(new PhoneNumberInfoLookupError.NdcNotFound(phoneNumber));
         }
 
-        String remaining = nsn.substring(matchedPhonePrefix.ndc().toString().length()); // 254252784
-        List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedPhonePrefix.ndc()); // ndc=9 {}
+        String remaining = nsn.substring(matchedNdcInfo.ndc().toString().length()); // 254252784
+        List<OperatorInfo> operatorInfos = prefixCache.getOperatorPrefixMap().get(matchedNdcInfo.ndc()); // ndc=9 {}
         NdcInfo ndcInfo = new NdcInfo(
-                matchedPhonePrefix.ndc(),
-                matchedPhonePrefix.serviceArea(),
-                matchedPhonePrefix.numberType()
+                matchedNdcInfo.ndc(),
+                matchedNdcInfo.serviceArea(),
+                matchedNdcInfo.numberType()
         );
-        if(operatorPrefixes == null || operatorPrefixes.isEmpty()) {
+        if(operatorInfos == null || operatorInfos.isEmpty()) {
             return Either.right(new PhoneNumberInfo("Geographic numbers", ndcInfo));
         }
 
@@ -61,7 +60,7 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
                 continue;
             }
             String prefix = remaining.substring(0, length); // 25425, 2542, 254, 25, 2
-            for(OperatorPrefix p : operatorPrefixes) {
+            for(OperatorInfo p : operatorInfos) {
                 String prefixStart = String.valueOf(p.prefixStart());
                 String prefixEnd = String.valueOf(p.prefixEnd());
                 if(prefix.compareTo(prefixStart) >= 0 && prefix.compareTo(prefixEnd) <= 0) {

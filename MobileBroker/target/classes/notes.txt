@@ -1,6 +1,90 @@
 20:24
 250:259
 
+package com.innoveller.smsbroker.utils;
+
+import com.innoveller.smsbroker.exceptions.PhoneNumberInfoLookupError;
+import io.vavr.control.Either;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class PhoneNumberNormalizerTest {
+
+    @Test
+    void shouldReturnNsnForValidInternationalNumber() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber("+959254252784");
+
+        assertTrue(result.isRight());
+        assertEquals("9254252784", result.get());
+    }
+
+    @Test
+    void shouldConvertLocalNumberStartingWithZero() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber("09254252784");
+
+        assertTrue(result.isRight());
+        assertEquals("9254252784", result.get());
+    }
+
+    @Test
+    void shouldRemoveSpacesAndHyphens() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber("+95 925-425-2784");
+
+        assertTrue(result.isRight());
+        assertEquals("9254252784", result.get());
+    }
+
+    @Test
+    void shouldReturnErrorWhenPhoneIsNull() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber(null);
+
+        assertTrue(result.isLeft());
+        assertTrue(result.getLeft() instanceof PhoneNumberInfoLookupError.InvalidPhoneNumber);
+    }
+
+    @Test
+    void shouldReturnErrorWhenPhoneIsBlank() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber(" ");
+
+        assertTrue(result.isLeft());
+        assertTrue(result.getLeft() instanceof PhoneNumberInfoLookupError.InvalidPhoneNumber);
+    }
+
+    @Test
+    void shouldReturnErrorForInvalidCountryCode() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber("+123456789");
+
+        assertTrue(result.isLeft());
+        assertTrue(result.getLeft() instanceof PhoneNumberInfoLookupError.InvalidPhoneNumber);
+    }
+
+    @Test
+    void shouldReturnErrorForInvalidPhoneLength() {
+        Either<PhoneNumberInfoLookupError, String> result =
+                PhoneNumberNormalizer.getNationalSignificantNumber("+95912");
+
+        assertTrue(result.isLeft());
+        assertTrue(result.getLeft() instanceof PhoneNumberInfoLookupError.InvalidPhoneNumber);
+    }
+}
+
+| Test                       | Example Input      | Expected Result |
+| -------------------------- | ------------------ | --------------- |
+| Valid international number | `+959254252784`    | `9254252784`    |
+| Local format               | `09254252784`      | `9254252784`    |
+| Remove formatting          | `+95 925-425-2784` | `9254252784`    |
+| Null input                 | `null`             | Error           |
+| Blank input                | `" "`              | Error           |
+| Wrong country code         | `+123456789`       | Error           |
+| Invalid length             | `+95912`           | Error           |
+
 
 
  null input          -> Exception
