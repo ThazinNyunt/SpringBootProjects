@@ -1,4 +1,3 @@
-C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\cache\PrefixCache.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\controllers\api\APIKeyController.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\controllers\api\dtos\APIKeyResponse.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\controllers\api\dtos\APIKeyTenantRequest.java
@@ -7,8 +6,6 @@ C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\s
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\controllers\api\dtos\SmsSendResponse.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\controllers\api\PhoneNumberInfoController.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\controllers\api\SmsController.java
-C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\data\Ndc.java
-C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\data\OperatorPrefix.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\entities\APIKey.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\entities\Operator.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\entities\Provider.java
@@ -40,6 +37,9 @@ C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\s
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\securities\APIKeyFilter.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\APIKeyService.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\APIKeyServiceImpl.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\cache\PrefixCache.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\data\Ndc.java
+C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\data\OperatorPrefix.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\dtos\APIKeyInfo.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\dtos\NdcInfo.java
 C:\Project\Java\workplace\springboot\MobileBroker\src\main\java\com\innoveller\smsbroker\services\dtos\PhoneNumberInfo.java

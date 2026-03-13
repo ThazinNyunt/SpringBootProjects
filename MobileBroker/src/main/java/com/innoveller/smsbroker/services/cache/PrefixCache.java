@@ -1,6 +1,6 @@
 package com.innoveller.smsbroker.services.cache;
 
-import com.innoveller.smsbroker.services.data.Ndc;
+import com.innoveller.smsbroker.services.data.PhonePrefix;
 import com.innoveller.smsbroker.services.data.OperatorPrefix;
 import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.ClassPathResource;
@@ -14,11 +14,11 @@ import java.util.*;
 @Component
 public class PrefixCache {
 
-    private final Map<Integer, Ndc> ndcMap = new HashMap<>();
+    private final Map<Integer, PhonePrefix> ndcMap = new HashMap<>();
     private final Map<Integer, List<OperatorPrefix>> operatorPrefixMap = new HashMap<>();
-    private final List<Ndc> sortedNdcList = new ArrayList<>();
+    private final List<PhonePrefix> sortedPhonePrefixList = new ArrayList<>();
 
-    public Map<Integer, Ndc> getNdcMap() {
+    public Map<Integer, PhonePrefix> getNdcMap() {
         return ndcMap;
     }
 
@@ -26,8 +26,8 @@ public class PrefixCache {
         return operatorPrefixMap;
     }
 
-    public List<Ndc> getSortedNdcList() {
-        return sortedNdcList;
+    public List<PhonePrefix> getSortedNdcList() {
+        return sortedPhonePrefixList;
     }
 
     @PostConstruct
@@ -35,17 +35,18 @@ public class PrefixCache {
         try {
             ObjectMapper mapper = new ObjectMapper();
             InputStream ndcInput = new ClassPathResource("ndc.json").getInputStream();
-            List<Ndc> ndcList = mapper.readValue(ndcInput, new TypeReference<List<Ndc>>() {});
-            for (Ndc n : ndcList) {
-                ndcMap.put(n.getNdc(), n);
-                sortedNdcList.add(n);
+            List<PhonePrefix> phonePrefixList = mapper.readValue(ndcInput, new TypeReference<List<PhonePrefix>>() {});
+            for (PhonePrefix n : phonePrefixList) {
+                ndcMap.put(n.ndc(), n);
+                sortedPhonePrefixList.add(n);
             }
 
-            sortedNdcList.sort(new Comparator<Ndc>() {
+            sortedPhonePrefixList.sort(new Comparator<PhonePrefix>() {
                 @Override
-                public int compare(Ndc n1, Ndc n2) {
-                    return Integer.compare(n2.getNdc().toString().length(),
-                            n1.getNdc().toString().length());
+                public int compare(PhonePrefix n1, PhonePrefix n2) {
+                    return Integer.compare(
+                            n2.ndc().toString().length(),
+                            n1.ndc().toString().length());
                 }
             });
 
@@ -53,10 +54,10 @@ public class PrefixCache {
             List<OperatorPrefix> opList = mapper.readValue(opInput, new TypeReference<List<OperatorPrefix>>() {});
 
             for (OperatorPrefix op : opList) {
-                List<OperatorPrefix> list = operatorPrefixMap.get(op.getNdc());
+                List<OperatorPrefix> list = operatorPrefixMap.get(op.ndc());
                 if(list == null) {
                     list = new ArrayList<>();
-                    operatorPrefixMap.put(op.getNdc(), list);
+                    operatorPrefixMap.put(op.ndc(), list);
                 }
                 list.add(op);
             }

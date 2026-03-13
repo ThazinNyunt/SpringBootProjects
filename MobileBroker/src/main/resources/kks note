@@ -86,7 +86,7 @@ public class OperatorController {
         }
         if (error instanceof PhoneNumberInfoLookupError.NdcNotFound e) {
             return ProblemDetails.builder()
-                    .type("https://example.com/problems/ndc-not-found")
+                    .type("https://example.com/problems/phonePrefix-not-found")
                     .title("NDC Not Found")
                     .status(HttpStatus.BAD_REQUEST.value())
                     .detail("No NDC found for: " + e.phoneNumber())

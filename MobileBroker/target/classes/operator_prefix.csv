@@ -1,4 +1,4 @@
-operator_prefix_id,operator_id,ndc,prefix_start,prefix_end
+operator_prefix_id,operator_id,phonePrefix,prefix_start,prefix_end
 1,MPT,9,20,24
 2,MPT,9,250,259
 3,MEC,9,300,309

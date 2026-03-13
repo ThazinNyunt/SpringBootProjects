@@ -2,7 +2,7 @@ package com.innoveller.smsbroker.services;
 
 import com.innoveller.smsbroker.services.cache.PrefixCache;
 import com.innoveller.smsbroker.exceptions.PhoneNumberInfoLookupError;
-import com.innoveller.smsbroker.services.data.Ndc;
+import com.innoveller.smsbroker.services.data.PhonePrefix;
 import com.innoveller.smsbroker.services.data.OperatorPrefix;
 import com.innoveller.smsbroker.entities.Operator;
 import com.innoveller.smsbroker.repositories.OperatorRepository;
@@ -27,27 +27,30 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
 
     @Override
     public Either<PhoneNumberInfoLookupError, PhoneNumberInfo> findOperator(String phoneNumber) {
-        String nsn = PhoneNumberNormalizer.normalizeToNsn(phoneNumber); // 9254252784
-        if(nsn.startsWith("error: ")) {
-            return Either.left(new PhoneNumberInfoLookupError.InvalidPhoneNumber(phoneNumber,nsn.substring(6)));
+
+        Either<PhoneNumberInfoLookupError, String> nsnResult = PhoneNumberNormalizer.getNationalSignificantNumber(phoneNumber);
+        if(nsnResult.isLeft()) {
+            return Either.left(nsnResult.getLeft());
         }
-        Ndc matchedNdc = null;
-        for(Ndc ndc : prefixCache.getSortedNdcList()) {
-            if(nsn.startsWith(ndc.getNdc().toString())) {
-                matchedNdc = ndc;
+        String nsn = nsnResult.get();
+
+        PhonePrefix matchedPhonePrefix = null;
+        for(PhonePrefix phonePrefix : prefixCache.getSortedNdcList()) {
+            if(nsn.startsWith(phonePrefix.ndc().toString())) {
+                matchedPhonePrefix = phonePrefix;
                 break;
             }
         }
-        if(matchedNdc == null) {
+        if(matchedPhonePrefix == null) {
             return Either.left(new PhoneNumberInfoLookupError.NdcNotFound(phoneNumber));
         }
 
-        String remaining = nsn.substring(matchedNdc.getNdc().toString().length()); // 254252784
-        List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedNdc.getNdc()); // ndc=9 {}
+        String remaining = nsn.substring(matchedPhonePrefix.ndc().toString().length()); // 254252784
+        List<OperatorPrefix> operatorPrefixes = prefixCache.getOperatorPrefixMap().get(matchedPhonePrefix.ndc()); // ndc=9 {}
         NdcInfo ndcInfo = new NdcInfo(
-                matchedNdc.getNdc(),
-                matchedNdc.getServiceArea(),
-                matchedNdc.getNumberType()
+                matchedPhonePrefix.ndc(),
+                matchedPhonePrefix.serviceArea(),
+                matchedPhonePrefix.numberType()
         );
         if(operatorPrefixes == null || operatorPrefixes.isEmpty()) {
             return Either.right(new PhoneNumberInfo("Geographic numbers", ndcInfo));
@@ -59,10 +62,10 @@ public class PhoneNumberInfoServiceImpl implements PhoneNumberInfoService {
             }
             String prefix = remaining.substring(0, length); // 25425, 2542, 254, 25, 2
             for(OperatorPrefix p : operatorPrefixes) {
-                String prefixStart = String.valueOf(p.getPrefixStart());
-                String prefixEnd = String.valueOf(p.getPrefixEnd());
+                String prefixStart = String.valueOf(p.prefixStart());
+                String prefixEnd = String.valueOf(p.prefixEnd());
                 if(prefix.compareTo(prefixStart) >= 0 && prefix.compareTo(prefixEnd) <= 0) {
-                    Optional<Operator> operator = operatorRepository.findById(p.getOperator());
+                    Optional<Operator> operator = operatorRepository.findById(p.operator());
                     if(operator.isPresent()) {
                         return Either.right(new PhoneNumberInfo(operator.get().getOperatorId(), ndcInfo));
                     }

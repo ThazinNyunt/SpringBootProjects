@@ -1,28 +1,10 @@
 package com.innoveller.smsbroker.services.data;
 
-public class OperatorPrefix {
+public record OperatorPrefix (
+        String operator,
+        Integer ndc,
+        Integer prefixStart,
+        Integer prefixEnd ) {
 
-    private String operator;
-    private Integer ndc;
-    private Integer prefixStart;
-    private Integer prefixEnd;
 
-    public OperatorPrefix() {
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public Integer getNdc() {
-        return ndc;
-    }
-
-    public Integer getPrefixStart() {
-        return prefixStart;
-    }
-
-    public Integer getPrefixEnd() {
-        return prefixEnd;
-    }
 }

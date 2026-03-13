@@ -37,7 +37,7 @@ public enum NumberType {
 package com.example.mobilebroker.service.dtos;
 
 public record NdcInfo(
-        Integer ndc,
+        Integer phonePrefix,
         String area,
         NumberType numberType
 ) {}
@@ -51,9 +51,9 @@ public record PhoneNumberInfo(
 ) {}
 
 NdcInfo ndcInfo = new NdcInfo(
-        matchedNdc.getNdc(),
-        matchedNdc.getArea(),
-        NumberType.fromString(matchedNdc.getNumberType())
+        matchedPhonePrefix.getNdc(),
+        matchedPhonePrefix.getArea(),
+        NumberType.fromString(matchedPhonePrefix.getNumberType())
 );
 
 return Either.right(
@@ -69,7 +69,7 @@ package com.example.mobilebroker.controller.api.dtos;
 public record PhoneNumberInfoResponse(
         String phoneNumber,
         String operator,
-        Integer ndc,
+        Integer phonePrefix,
         String area,
         String numberType
 ) {}
@@ -82,7 +82,7 @@ public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
             .map(info -> new PhoneNumberInfoResponse(
                     info.phoneNumber(),
                     info.operator(),
-                    info.ndcInfo().ndc(),
+                    info.ndcInfo().phonePrefix(),
                     info.ndcInfo().area(),
                     info.ndcInfo().numberType().name()
             ));
@@ -190,7 +190,7 @@ public enum NumberType {
 package com.example.mobilebroker.service.dtos;
 
 public record NdcInfo(
-        Integer ndc,
+        Integer phonePrefix,
         String area,
         NumberType numberType
 ) {}
@@ -204,9 +204,9 @@ public record PhoneNumberInfo(
 ) {}
 
 NdcInfo ndcInfo = new NdcInfo(
-        matchedNdc.getNdc(),
-        matchedNdc.getArea(),
-        NumberType.fromString(matchedNdc.getNumberType())
+        matchedPhonePrefix.getNdc(),
+        matchedPhonePrefix.getArea(),
+        NumberType.fromString(matchedPhonePrefix.getNumberType())
 );
 
 return Either.right(
@@ -222,7 +222,7 @@ package com.example.mobilebroker.controller.api.dtos;
 public record PhoneNumberInfoResponse(
         String phoneNumber,
         String operator,
-        Integer ndc,
+        Integer phonePrefix,
         String area,
         String numberType
 ) {}
@@ -235,7 +235,7 @@ public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
             .map(info -> new PhoneNumberInfoResponse(
                     info.phoneNumber(),
                     info.operator(),
-                    info.ndcInfo().ndc(),
+                    info.ndcInfo().phonePrefix(),
                     info.ndcInfo().area(),
                     info.ndcInfo().numberType().name()
             ));
@@ -268,7 +268,7 @@ public enum NumberType {
 package com.example.mobilebroker.service.dtos;
 
 public record NdcInfo(
-        Integer ndc,
+        Integer phonePrefix,
         String area,
         NumberType numberType
 ) {}
@@ -282,9 +282,9 @@ public record PhoneNumberInfo(
 ) {}
 
 NdcInfo ndcInfo = new NdcInfo(
-        matchedNdc.getNdc(),
-        matchedNdc.getArea(),
-        NumberType.fromString(matchedNdc.getNumberType())
+        matchedPhonePrefix.getNdc(),
+        matchedPhonePrefix.getArea(),
+        NumberType.fromString(matchedPhonePrefix.getNumberType())
 );
 
 return Either.right(
@@ -300,7 +300,7 @@ package com.example.mobilebroker.controller.api.dtos;
 public record PhoneNumberInfoResponse(
         String phoneNumber,
         String operator,
-        Integer ndc,
+        Integer phonePrefix,
         String area,
         String numberType
 ) {}
@@ -313,7 +313,7 @@ public Either<PhoneNumberInfoLookupError, PhoneNumberInfoResponse> lookup(
             .map(info -> new PhoneNumberInfoResponse(
                     info.phoneNumber(),
                     info.operator(),
-                    info.ndcInfo().ndc(),
+                    info.ndcInfo().phonePrefix(),
                     info.ndcInfo().area(),
                     info.ndcInfo().numberType().name()
             ));
@@ -462,7 +462,7 @@ MobileBroker/
 │
 └── src/main/resources
     ├── application.properties
-    ├── ndc.json
+    ├── phonePrefix.json
     └── operator-prefix.json
 
 ┌─────────────────────────────┐

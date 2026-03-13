@@ -1,10 +1,14 @@
 package com.innoveller.smsbroker.utils;
+
+import com.innoveller.smsbroker.exceptions.PhoneNumberInfoLookupError;
+import io.vavr.control.Either;
+
 public class PhoneNumberNormalizer {
 
-    public static String normalizeToNsn(String phone) {
+    public static Either<PhoneNumberInfoLookupError, String> getNationalSignificantNumber(String phone) {
 
         if (phone == null || phone.isBlank()) {
-            return "error: Phone number is empty!";
+            return Either.left(new PhoneNumberInfoLookupError.InvalidPhoneNumber(phone,"Phone number is empty"));
         }
 
         phone = phone.replace("+", "").replace(" ", "").replace("-", "");  // +959254252784 -> 959254252784
@@ -14,15 +18,17 @@ public class PhoneNumberNormalizer {
         }
 
         if (!phone.startsWith("95")) {
-            return "error: Invalid Myanmar Phone Number Format";
+            return Either.left(new PhoneNumberInfoLookupError.InvalidPhoneNumber(phone,"Invalid Myanmar phone number format"));
         }
 
         phone = phone.substring(2); // 959254252784  ->  9254252784
 
         if (phone.length() < 6 || phone.length() > 10) {
-            return "error: Invalid phone number length";
+            return Either.left(new PhoneNumberInfoLookupError.InvalidPhoneNumber(phone,"Invalid phone number length"));
+
         }
 
-        return phone;
+        return Either.right(phone);
+
     }
 }
