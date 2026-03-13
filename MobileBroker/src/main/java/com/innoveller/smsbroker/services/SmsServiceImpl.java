@@ -58,7 +58,7 @@ public class SmsServiceImpl implements SmsService {
 
         List<SmsRouting> routes = smsRoutingRepository.findByTenantAndOperator(tenantId, operator);
         if(routes.isEmpty()) {
-            return Either.left(new SmsSendError.FailedNoProvider(operator));
+            return Either.left(new SmsSendError.FailedNoProvider(tenantId));
         }
 
         boolean senderNameFound = false;

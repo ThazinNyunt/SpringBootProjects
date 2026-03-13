@@ -1,17 +1,9 @@
 package com.innoveller.smsbroker.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "operator")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class    Operator {
 
     @Id
@@ -23,4 +15,37 @@ public class    Operator {
 
     @Column(name = "country_code", nullable = false)
     private Integer countryCode;
+
+    public Operator() {
+    }
+
+    public Operator(String operatorId, String name, Integer countryCode) {
+        this.operatorId = operatorId;
+        this.name = name;
+        this.countryCode = countryCode;
+    }
+
+    public String getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(Integer countryCode) {
+        this.countryCode = countryCode;
+    }
 }

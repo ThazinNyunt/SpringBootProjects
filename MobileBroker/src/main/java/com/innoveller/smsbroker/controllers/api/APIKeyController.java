@@ -67,7 +67,7 @@ public class APIKeyController {
     private APIKeyResponse mapToResponse(APIKeyInfo result) {
 
         return new APIKeyResponse(
-                result.tenantName(),
+                result.name(),
                 result.apiKey(),
                 result.active()
         );

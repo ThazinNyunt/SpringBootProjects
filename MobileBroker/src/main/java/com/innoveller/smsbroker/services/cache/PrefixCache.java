@@ -3,7 +3,6 @@ package com.innoveller.smsbroker.services.cache;
 import com.innoveller.smsbroker.services.data.Ndc;
 import com.innoveller.smsbroker.services.data.OperatorPrefix;
 import jakarta.annotation.PostConstruct;
-import lombok.Getter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
@@ -15,12 +14,21 @@ import java.util.*;
 @Component
 public class PrefixCache {
 
-    @Getter
     private final Map<Integer, Ndc> ndcMap = new HashMap<>();
-    @Getter
     private final Map<Integer, List<OperatorPrefix>> operatorPrefixMap = new HashMap<>();
-    @Getter
     private final List<Ndc> sortedNdcList = new ArrayList<>();
+
+    public Map<Integer, Ndc> getNdcMap() {
+        return ndcMap;
+    }
+
+    public Map<Integer, List<OperatorPrefix>> getOperatorPrefixMap() {
+        return operatorPrefixMap;
+    }
+
+    public List<Ndc> getSortedNdcList() {
+        return sortedNdcList;
+    }
 
     @PostConstruct
     public void loadData() {

@@ -1,17 +1,9 @@
 package com.innoveller.smsbroker.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "sms_sender")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SmsSender {
 
     @EmbeddedId
@@ -29,4 +21,46 @@ public class SmsSender {
 
     @Column(name = "sender_name")
     private String senderName;
+
+    public SmsSender() {
+    }
+
+    public SmsSender(SmsSenderId smsSenderId, Tenant tenant, Provider provider, String senderName) {
+        this.smsSenderId = smsSenderId;
+        this.tenant = tenant;
+        this.provider = provider;
+        this.senderName = senderName;
+    }
+
+    public SmsSenderId getSmsSenderId() {
+        return smsSenderId;
+    }
+
+    public void setSmsSenderId(SmsSenderId smsSenderId) {
+        this.smsSenderId = smsSenderId;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
 }

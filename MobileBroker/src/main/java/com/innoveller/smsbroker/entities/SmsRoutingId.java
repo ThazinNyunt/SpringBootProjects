@@ -1,17 +1,8 @@
 package com.innoveller.smsbroker.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
 
 @Embeddable
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SmsRoutingId {
 
     @Column(name = "tenant_id")
@@ -22,4 +13,37 @@ public class SmsRoutingId {
 
     @Column(name = "provider_id")
     private String providerId;
+
+    public SmsRoutingId() {
+    }
+
+    public SmsRoutingId(Long tenantId, String operatorId, String providerId) {
+        this.tenantId = tenantId;
+        this.operatorId = operatorId;
+        this.providerId = providerId;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
 }

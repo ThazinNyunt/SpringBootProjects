@@ -1,17 +1,9 @@
 package com.innoveller.smsbroker.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "sms_routing")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SmsRouting {
 
     @EmbeddedId
@@ -34,4 +26,55 @@ public class SmsRouting {
 
     @Column(name = "priority")
     private Integer priority;
+
+    public SmsRouting() {
+    }
+
+    public SmsRouting(SmsRoutingId smsRoutingId, Tenant tenant, Operator operator, Provider provider, Integer priority) {
+        this.smsRoutingId = smsRoutingId;
+        this.tenant = tenant;
+        this.operator = operator;
+        this.provider = provider;
+        this.priority = priority;
+    }
+
+    public SmsRoutingId getSmsRoutingId() {
+        return smsRoutingId;
+    }
+
+    public void setSmsRoutingId(SmsRoutingId smsRoutingId) {
+        this.smsRoutingId = smsRoutingId;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+
+    public Operator getOperator() {
+        return operator;
+    }
+
+    public void setOperator(Operator operator) {
+        this.operator = operator;
+    }
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
 }

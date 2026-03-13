@@ -1,15 +1,9 @@
 package com.innoveller.smsbroker.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "api_key")
-@Getter
-@Setter
-@NoArgsConstructor
 public class APIKey {
 
     @Id
@@ -26,4 +20,46 @@ public class APIKey {
 
     @Column(name = "active", nullable = false)
     private Boolean active;
+
+    public APIKey() {
+    }
+
+    public APIKey(Long apiKeyId, String apiKey, Tenant tenant, Boolean active) {
+        this.apiKeyId = apiKeyId;
+        this.apiKey = apiKey;
+        this.tenant = tenant;
+        this.active = active;
+    }
+
+    public Long getApiKeyId() {
+        return apiKeyId;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setApiKeyId(Long apiKeyId) {
+        this.apiKeyId = apiKeyId;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }

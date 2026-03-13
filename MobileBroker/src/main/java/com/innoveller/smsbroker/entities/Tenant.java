@@ -1,17 +1,9 @@
 package com.innoveller.smsbroker.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "tenant")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Tenant {
 
     @Id
@@ -21,4 +13,28 @@ public class Tenant {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    public Tenant() {
+    }
+
+    public Tenant(Long tenantId, String name) {
+        this.tenantId = tenantId;
+        this.name = name;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

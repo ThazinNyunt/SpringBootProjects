@@ -1,20 +1,9 @@
 package com.innoveller.smsbroker.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "provider")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Provider {
 
     @Id
@@ -26,5 +15,29 @@ public class Provider {
 
     public ProviderType getProviderType() {
         return ProviderType.from(providerId);
+    }
+
+    public Provider() {
+    }
+
+    public Provider(String providerId, String name) {
+        this.providerId = providerId;
+        this.name = name;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
